@@ -7,9 +7,17 @@
     "directory": "./public",
     "binding": "ASSETS",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/api/*"]
+    // El Worker atiende todo (redirige www/workers.dev y sirve /api); el resto pasa a ASSETS.
+    "run_worker_first": true
   },
-  "observability": { "enabled": true }
-  // Dominio propio: cuando el dominio esté en Cloudflare, descomentar y ajustar.
-  // "routes": [{ "pattern": "clippersdesamba.com", "custom_domain": true }]
+  "observability": { "enabled": true },
+  // workers.dev sigue activo solo para redirigir la URL antigua al dominio.
+  "workers_dev": true,
+  "preview_urls": false,
+  // Dominio propio (Cloudflare crea los DNS y el certificado). www y workers.dev
+  // redirigen al dominio principal desde el Worker.
+  "routes": [
+    { "pattern": "clippersdesamba.com", "custom_domain": true },
+    { "pattern": "www.clippersdesamba.com", "custom_domain": true }
+  ]
 }

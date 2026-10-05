@@ -6,6 +6,7 @@
 // Cache API no guarda nada) y Cache API del edge (con dominio propio).
 import { obtenerCalendario } from './swish.js';
 
+const DOMINIO = 'clippersdesamba.com';
 const CACHE_CALENDARIO_S = 600;
 const CACHE_LOGO_S = 604800;
 const CACHE_LOGO_FALLO_S = 3600;
@@ -19,6 +20,10 @@ const MAX_LOGOS_EN_MEMORIA = 300;
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    // Una sola dirección pública: www y *.workers.dev van al dominio principal.
+    if (url.hostname === `www.${DOMINIO}` || url.hostname.endsWith('.workers.dev')) {
+      return Response.redirect(`https://${DOMINIO}${url.pathname}${url.search}`, 301);
+    }
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       return new Response('Método no permitido', { status: 405, headers: { Allow: 'GET, HEAD' } });
     }

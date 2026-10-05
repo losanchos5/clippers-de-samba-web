@@ -59,16 +59,12 @@ Con eso se actualizan `GRUPOS` en `src/swish.js` y los IDs al principio de `scri
 
 ## Publicar en Cloudflare
 
-1. `npx wrangler login`, una sola vez: abre el navegador para entrar en tu cuenta de Cloudflare.
-2. `npm run deploy`. Al terminar te da una URL `https://clippers-de-samba.<tu-cuenta>.workers.dev`.
-3. **Dominio propio:**
-   - Lo más sencillo es comprarlo en Cloudflare Registrar (precio de coste).
-   - Si lo compras en otro sitio, cambia sus nameservers a los que te indique Cloudflare.
-   - Después, en *Workers & Pages → clippers-de-samba → Settings → Domains & Routes → Add →
-     Custom domain*. También puedes descomentar `routes` en `wrangler.jsonc` y volver a desplegar.
-4. Con el dominio ya puesto, añade en `index.html` la etiqueta
-   `<link rel="canonical" href="https://tudominio/">` y cambia `og:image` a la URL absoluta. Así la
-   vista previa sale bien al compartir en WhatsApp o Instagram.
+La web está en **https://clippersdesamba.com**. El dominio es de Cloudflare Registrar y está
+configurado como *Custom Domain* del Worker en `routes` de `wrangler.jsonc`. `www.` y
+`*.workers.dev` redirigen al dominio principal.
+
+- Lo normal es no desplegar a mano: el GitHub Action publica con cada push a `main` (ver más abajo).
+- Para desplegar desde tu PC: `npx wrangler login`, una vez, y luego `npm run deploy`.
 
 ## Actualización automática
 
