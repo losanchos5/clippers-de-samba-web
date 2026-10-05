@@ -1,0 +1,7 @@
+/* Sin JavaScript: no hay pantalla de entrada ni música, la web se ve igual */
+.entrada, .sonido, .hamburguesa { display: none !important; }
+body.bloqueado { overflow: auto; }
+.menu { position: static; opacity: 1; visibility: visible; background: none; display: block; }
+.menu__lista { display: flex; flex-wrap: wrap; gap: 4px; }
+.menu__lista a { font-size: .8rem; opacity: 1; transform: none; padding: 6px 8px; }
+.cabecera { position: absolute; height: auto; flex-wrap: wrap; padding-block: 8px; }

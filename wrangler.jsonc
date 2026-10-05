@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "clippers-de-samba",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"]
+  },
+  "observability": { "enabled": true }
+  // Dominio propio: cuando el dominio esté en Cloudflare, descomentar y ajustar.
+  // "routes": [{ "pattern": "clippersdesamba.com", "custom_domain": true }]
+}

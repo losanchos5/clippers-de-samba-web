@@ -1,0 +1,93 @@
+{
+  "provisional": false,
+  "A": {
+    "nombre": "Clippers de Samba A",
+    "division": "Tercera División",
+    "staff": "",
+    "jugadores": [
+      {
+        "dorsal": 0,
+        "nombre": "S. Gilabert Perea"
+      },
+      {
+        "dorsal": 2,
+        "nombre": "X. Gilabert Perea"
+      },
+      {
+        "dorsal": 3,
+        "nombre": "J. García Aibar"
+      },
+      {
+        "dorsal": 7,
+        "nombre": "Peñalver Sebast"
+      },
+      {
+        "dorsal": 11,
+        "nombre": "F. García Villar"
+      },
+      {
+        "dorsal": 13,
+        "nombre": "N. Serrano Wood"
+      },
+      {
+        "dorsal": 19,
+        "nombre": "Puchades Alabau"
+      },
+      {
+        "dorsal": 24,
+        "nombre": "A. Navarro Gil"
+      }
+    ]
+  },
+  "B": {
+    "nombre": "Clippers de Samba B",
+    "division": "Quinta División",
+    "staff": "",
+    "jugadores": [
+      {
+        "dorsal": 1,
+        "nombre": "R. Valls Hormigo"
+      },
+      {
+        "dorsal": 3,
+        "nombre": "J. García Aibar"
+      },
+      {
+        "dorsal": 5,
+        "nombre": "N. García del Río"
+      },
+      {
+        "dorsal": 10,
+        "nombre": "A. Buj Paredes"
+      },
+      {
+        "dorsal": 11,
+        "nombre": "F. García Villar"
+      },
+      {
+        "dorsal": 13,
+        "nombre": "N. Serrano Wood"
+      },
+      {
+        "dorsal": 21,
+        "nombre": "Tamarit Camacho"
+      },
+      {
+        "dorsal": 22,
+        "nombre": "P. Cañada Portet"
+      },
+      {
+        "dorsal": 23,
+        "nombre": "González Tárreg"
+      },
+      {
+        "dorsal": 24,
+        "nombre": "A. Navarro Gil"
+      },
+      {
+        "dorsal": 25,
+        "nombre": "P. Gascó Llopis"
+      }
+    ]
+  }
+}

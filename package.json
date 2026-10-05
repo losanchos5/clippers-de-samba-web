@@ -1,0 +1,20 @@
+{
+  "name": "clippers-de-samba-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "calendario": "node scripts/calendario.mjs",
+    "estadisticas": "python scripts/estadisticas.py",
+    "validar": "node scripts/validar-datos.mjs",
+    "test": "node --test tests/*.test.mjs && playwright test",
+    "test:unit": "node --test tests/*.test.mjs",
+    "test:e2e": "playwright test",
+    "datos": "node scripts/calendario.mjs && (python scripts/estadisticas.py || echo AVISO: no se han podido actualizar las estadisticas) && node scripts/validar-datos.mjs",
+    "deploy": "npm run datos && wrangler deploy"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "wrangler": "^4.147.0"
+  }
+}

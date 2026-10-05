@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Clippers de Samba · Club de baloncesto · Valencia</title>
+  <meta name="description" content="Clippers de Samba, club de baloncesto de Valencia con dos equipos en la Liga Senior Quirónsalud de L'Alqueria del Basket. Plantillas, calendario, equipaciones e Instagram.">
+  <meta name="theme-color" content="#004A1E">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="Clippers de Samba">
+  <meta property="og:title" content="Clippers de Samba · Club de baloncesto">
+  <meta property="og:description" content="Dos equipos, un ritmo. Liga Senior Quirónsalud · L'Alqueria del Basket · Valencia.">
+  <meta property="og:image" content="/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+
+  <link rel="preload" href="/assets/logo-blanco.svg" as="image" fetchpriority="high">
+  <link rel="preload" href="/fonts/graduate.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/barlow-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/styles.css">
+  <noscript><link rel="stylesheet" href="/css/noscript.css"></noscript>
+
+  <script type="module" src="/js/main.js"></script>
+</head>
+<body class="bloqueado">
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+  <!-- Pantalla de entrada: el clic desbloquea el audio en todos los navegadores -->
+  <div class="entrada" id="entrada" role="dialog" aria-modal="true" aria-labelledby="entrada-titulo">
+    <div class="entrada__ondas" aria-hidden="true"></div>
+    <div class="entrada__caja">
+      <img class="entrada__logo" src="/assets/logo-blanco.svg" alt="" width="946" height="1056" fetchpriority="high">
+      <p class="entrada__titulo" id="entrada-titulo">Bienvenido a la casa de los <strong>Clippers de Samba</strong></p>
+      <button class="btn btn--entrar" id="entrar-con-sonido" type="button">
+        Entrar
+        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="icono__onda" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>
+      </button>
+      <button class="entrada__sin-sonido" id="entrar-sin-sonido" type="button">Entrar sin sonido</button>
+    </div>
+  </div>
+
+  <audio id="musica" src="/assets/audio/mas-que-nada.mp3" preload="none" loop></audio>
+
+  <header class="cabecera" id="cabecera">
+    <a class="cabecera__marca" href="#inicio" aria-label="Clippers de Samba, ir al inicio">
+      <img src="/assets/escudo-blanco.webp" alt="" width="240" height="210">
+      <img class="cabecera__wm" src="/assets/wordmark-blanco.svg" alt="" width="855" height="349">
+    </a>
+    <nav class="menu" id="menu" aria-label="Principal">
+      <ul class="menu__lista">
+        <li><a href="#club">El club</a></li>
+        <li><a href="#equipos">Equipos</a></li>
+        <li><a href="#calendario">Calendario</a></li>
+        <li><a href="#equipacion">Equipación</a></li>
+        <li><a href="#instagram">Instagram</a></li>
+        <li><a href="#unete">Únete</a></li>
+      </ul>
+    </nav>
+    <button class="hamburguesa" id="hamburguesa" type="button" aria-controls="menu" aria-expanded="false" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <button class="sonido" id="boton-sonido" type="button" aria-pressed="false" aria-label="Activar música">
+    <span class="sonido__barras" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span class="sonido__texto">Música</span>
+  </button>
+
+  <main id="contenido" tabindex="-1">
+    <!-- HERO -->
+    <section class="hero" id="inicio" aria-labelledby="hero-titulo">
+      <div class="hero__fondo" aria-hidden="true"></div>
+      <div class="hero__rejilla contenedor">
+        <div class="hero__texto">
+          <p class="etiqueta etiqueta--clara"><span data-config="liga.nombre">Liga Senior Quirónsalud</span> · Temporada <span data-config="temporada">26/27</span></p>
+          <h1 class="hero__titulo" id="hero-titulo">
+            <img class="wm" src="/assets/wordmark-blanco.svg" alt="Clippers de Samba" width="855" height="349">
+          </h1>
+          <p class="hero__lema">Baloncesto con calma fuera de la pista y samba dentro. Dos equipos, un mismo ritmo en <strong>L'Alqueria del Basket</strong>.</p>
+          <div class="hero__acciones">
+            <a class="btn btn--primario" href="#calendario">Ver calendario</a>
+            <a class="btn btn--fantasma" data-instagram href="https://www.instagram.com/" target="_blank" rel="noopener">
+              <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle class="icono__punto" cx="17.4" cy="6.6" r="1.1"/></svg>
+              Instagram
+            </a>
+          </div>
+        </div>
+
+        <div class="hero__balon">
+          <div class="balon" id="balon">
+            <!-- Respaldo en SVG mientras carga el balón 3D (o si no hay WebGL) -->
+            <svg class="balon__svg" viewBox="0 0 200 200" aria-hidden="true">
+              <defs>
+                <radialGradient id="cuero" cx="38%" cy="32%" r="75%">
+                  <stop offset="0" stop-color="#F59A55"/>
+                  <stop offset=".55" stop-color="#E8762B"/>
+                  <stop offset="1" stop-color="#8A3A10"/>
+                </radialGradient>
+              </defs>
+              <circle cx="100" cy="100" r="96" fill="url(#cuero)"/>
+              <g fill="none" stroke="#1B120C" stroke-width="3.2" stroke-linecap="round">
+                <path d="M4 100 H196"/>
+                <path d="M100 4 V196"/>
+                <path d="M38 22 C 72 60, 72 140, 38 178"/>
+                <path d="M162 22 C 128 60, 128 140, 162 178"/>
+              </g>
+            </svg>
+          </div>
+          <div class="balon__sombra" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cinta" aria-hidden="true">
+      <div class="cinta__pista">
+        <span>Clippers de Samba</span><span>Liga Senior Quirónsalud</span><span>L'Alqueria del Basket</span><span>Temporada 26/27</span><span>Clippers A · Tercera</span><span>Clippers B · Quinta</span>
+        <span>Clippers de Samba</span><span>Liga Senior Quirónsalud</span><span>L'Alqueria del Basket</span><span>Temporada 26/27</span><span>Clippers A · Tercera</span><span>Clippers B · Quinta</span>
+      </div>
+    </div>
+
+    <!-- EL CLUB -->
+    <section class="seccion seccion--clara club" id="club" aria-labelledby="club-titulo">
+      <div class="contenedor club__rejilla">
+        <div class="club__texto">
+          <p class="etiqueta">El club</p>
+          <h2 class="titulo" id="club-titulo">Calma fuera,<br><span class="guion">samba dentro</span></h2>
+          <p>Somos un club de baloncesto amateur de Valencia. Nos juntamos para competir en serio, pero sin perder el buen rollo: entrenamos, jugamos y celebramos juntos.</p>
+          <p>Nuestro perezoso lo resume bien. Tranquilos fuera de la pista, y cuando suena la bocina, ritmo, pase extra y defensa hasta el final.</p>
+          <ul class="cifras">
+            <li><strong>2</strong><span>equipos</span></li>
+            <li><strong>3ª · 5ª</strong><span>división</span></li>
+            <li><strong data-config="temporada">26/27</strong><span>temporada</span></li>
+          </ul>
+        </div>
+        <figure class="club__escudo">
+          <img src="/assets/logo-verde.svg" alt="Escudo de Clippers de Samba: un perezoso con camisa estampada sobre el rótulo del club" width="946" height="1056" loading="lazy">
+        </figure>
+      </div>
+    </section>
+
+    <!-- EQUIPOS -->
+    <section class="seccion seccion--verde equipos" id="equipos" aria-labelledby="equipos-titulo">
+      <div class="seccion__ondas" aria-hidden="true"></div>
+      <div class="contenedor">
+        <p class="etiqueta etiqueta--clara">Plantillas</p>
+        <h2 class="titulo titulo--claro" id="equipos-titulo">Los equipos</h2>
+        <div class="pestanas" role="tablist" aria-label="Equipo" data-grupo-equipo>
+          <button role="tab" type="button" id="tab-equipos-A" aria-controls="panel-equipos" aria-selected="true" data-equipo="A">Clippers A <small>Tercera</small></button>
+          <button role="tab" type="button" id="tab-equipos-B" aria-controls="panel-equipos" aria-selected="false" tabindex="-1" data-equipo="B">Clippers B <small>Quinta</small></button>
+        </div>
+        <div class="panel" id="panel-equipos" role="tabpanel" aria-labelledby="tab-equipos-A">
+          <div class="equipo__cabecera">
+            <h3 class="equipo__nombre" data-campo="nombre">Clippers de Samba A</h3>
+            <p class="equipo__division" data-campo="division"></p>
+            <p class="equipo__staff" data-campo="staff"></p>
+            <ul class="equipo__stats" id="equipo-stats"></ul>
+          </div>
+          <div class="lideres" id="bloque-lideres" hidden>
+            <h4 class="lideres__titulo">Máximos anotadores</h4>
+            <ol class="lideres__lista" id="lideres"></ol>
+          </div>
+          <ul class="plantilla" id="plantilla"></ul>
+          <p class="aviso" id="aviso-plantilla" hidden>Plantilla provisional. Pronto, los nombres de verdad.</p>
+          <p class="aviso" id="fuente-estadisticas" hidden></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALENDARIO -->
+    <section class="seccion seccion--clara calendario" id="calendario" aria-labelledby="calendario-titulo">
+      <div class="contenedor">
+        <p class="etiqueta">Temporada <span data-config="temporada">26/27</span></p>
+        <h2 class="titulo" id="calendario-titulo">Calendario</h2>
+        <div class="proximos" id="proximos"></div>
+
+        <div class="pestanas pestanas--oscuras" role="tablist" aria-label="Equipo" data-grupo-equipo>
+          <button role="tab" type="button" id="tab-cal-A" aria-controls="panel-calendario" aria-selected="true" data-equipo="A">Clippers A <small>Tercera</small></button>
+          <button role="tab" type="button" id="tab-cal-B" aria-controls="panel-calendario" aria-selected="false" tabindex="-1" data-equipo="B">Clippers B <small>Quinta</small></button>
+        </div>
+        <div class="panel" id="panel-calendario" role="tabpanel" aria-labelledby="tab-cal-A">
+          <div class="calendario__rejilla">
+            <div>
+              <h3 class="subtitulo">Partidos</h3>
+              <ol class="partidos" id="partidos"></ol>
+              <button class="btn btn--contorno partidos__mas" id="ver-todos" type="button" aria-controls="partidos" aria-expanded="false" hidden>Ver calendario completo</button>
+            </div>
+            <div id="bloque-clasificacion" hidden>
+              <h3 class="subtitulo">Clasificación</h3>
+              <div class="tabla-envoltura">
+                <table class="clasificacion" id="clasificacion">
+                  <thead><tr><th scope="col">#</th><th scope="col">Equipo</th><th scope="col"><abbr title="Partidos jugados">PJ</abbr></th><th scope="col"><abbr title="Ganados">G</abbr></th><th scope="col"><abbr title="Perdidos">P</abbr></th><th scope="col"><abbr title="Diferencia de puntos">Dif</abbr></th></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="calendario__pie">
+          <span id="actualizado"></span>
+          Todos los partidos se juegan en <a data-config-href="sede.mapa" href="#" target="_blank" rel="noopener">L'Alqueria del Basket</a>.
+          Datos oficiales en la <a data-config-href="liga.web" href="#" target="_blank" rel="noopener">web de la liga</a> y en la app <a data-config-href="liga.app" href="#" target="_blank" rel="noopener">Swish</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- EQUIPACION -->
+    <section class="seccion seccion--oscura equipacion" id="equipacion" aria-labelledby="equipacion-titulo">
+      <div class="seccion__ondas" aria-hidden="true"></div>
+      <div class="contenedor">
+        <p class="etiqueta etiqueta--clara">Equipación <span data-config="temporada">26/27</span></p>
+        <h2 class="titulo titulo--claro" id="equipacion-titulo">Vestimos <span class="guion">de samba</span></h2>
+        <div class="camisetas">
+          <figure class="camiseta-foto" data-tilt>
+            <img src="/assets/equipacion-verde-frontal.webp" alt="Primera equipación: camiseta verde con ondas, rótulo Clippers de Samba en blanco y dorsal 23" width="540" height="1086" loading="lazy">
+            <figcaption><strong>1ª equipación</strong> Verde Clippers</figcaption>
+          </figure>
+          <figure class="camiseta-foto camiseta-foto--blanca" data-tilt>
+            <img src="/assets/equipacion-blanca.webp" alt="Segunda equipación: camiseta blanca con ribetes y rótulo verdes y dorsal 23" width="952" height="1200" loading="lazy">
+            <figcaption><strong>2ª equipación</strong> Blanca</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSTAGRAM -->
+    <section class="seccion seccion--verde instagram" id="instagram" aria-labelledby="instagram-titulo">
+      <div class="contenedor instagram__rejilla">
+        <div>
+          <p class="etiqueta etiqueta--clara">Redes</p>
+          <h2 class="titulo titulo--claro" id="instagram-titulo">Síguenos en Instagram</h2>
+          <p class="instagram__texto">Resultados, fotos de los partidos, convocatorias y lo que pasa en el vestuario. Todo, primero en Instagram.</p>
+          <a class="instagram__handle" data-instagram href="https://www.instagram.com/" target="_blank" rel="noopener">@<span data-config="instagram">clippersdesamba</span></a>
+          <a class="btn btn--blanco" data-instagram href="https://www.instagram.com/" target="_blank" rel="noopener">
+            <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle class="icono__punto" cx="17.4" cy="6.6" r="1.1"/></svg>
+            Seguir al club
+          </a>
+        </div>
+        <a class="mosaico" data-instagram href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Abrir el Instagram del club">
+          <span class="mosaico__celda mosaico__celda--escudo"><img src="/assets/escudo-blanco.webp" alt="" width="240" height="210" loading="lazy"></span>
+          <span class="mosaico__celda mosaico__celda--foto"><img src="/assets/equipacion-verde-frontal.webp" alt="" width="540" height="1086" loading="lazy"></span>
+          <span class="mosaico__celda mosaico__celda--texto"><span>Game<br>day</span></span>
+          <span class="mosaico__celda mosaico__celda--clara"><img src="/assets/escudo-verde.webp" alt="" width="240" height="210" loading="lazy"></span>
+          <span class="mosaico__celda mosaico__celda--samba"><span>de Samba</span></span>
+          <span class="mosaico__celda mosaico__celda--foto"><img src="/assets/equipacion-blanca.webp" alt="" width="952" height="1200" loading="lazy"></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- UNETE -->
+    <section class="seccion seccion--clara unete" id="unete" aria-labelledby="unete-titulo">
+      <div class="contenedor unete__caja">
+        <p class="etiqueta">Únete</p>
+        <h2 class="titulo" id="unete-titulo">¿Juegas con nosotros?</h2>
+        <p>Buscamos gente con ganas de jugar, entrenar y pasarlo bien. Escríbenos y te contamos cómo funcionan los entrenamientos y las pruebas.</p>
+        <div class="unete__acciones" id="unete-acciones">
+          <a class="btn btn--primario" data-instagram-dm href="https://ig.me/m/" target="_blank" rel="noopener">Escríbenos por Instagram</a>
+          <a class="btn btn--contorno" data-whatsapp href="#" target="_blank" rel="noopener" hidden>WhatsApp</a>
+          <a class="btn btn--contorno" data-email href="#" hidden>Email</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor pie__rejilla">
+      <img class="pie__logo" src="/assets/logo-blanco.svg" alt="Clippers de Samba" width="946" height="1056" loading="lazy">
+      <div class="pie__texto">
+        <p><strong>Clippers de Samba</strong> · Club de baloncesto amateur · Valencia</p>
+        <p>Compitiendo en la <a data-config-href="liga.web" href="#" target="_blank" rel="noopener">Liga Senior Quirónsalud de L'Alqueria del Basket</a>.</p>
+        <p class="pie__musica">Suena: <em>Mas Que Nada</em>, Sérgio Mendes.</p>
+      </div>
+      <nav class="pie__enlaces" aria-label="Pie de página">
+        <a href="#equipos">Equipos</a>
+        <a href="#calendario">Calendario</a>
+        <a data-instagram href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
+        <a href="#unete">Únete</a>
+      </nav>
+    </div>
+    <p class="pie__legal contenedor">© <span id="anio">2026</span> Clippers de Samba</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "public/index.html"
+        ],
+        "createdAt": "2026-10-05T17:03:28.541Z",
+        "reason": "Claude: all 9 hits verified false positives in 390/1366px screenshots: full-bleed .seccion backgrounds inset by .contenedor gutter; ticker spans, table cells and mosaic tiles carry their own padding or are edge-to-edge photos by design"
+      },
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "public/index.html"
+        ],
+        "createdAt": "2026-10-05T17:03:28.733Z",
+        "reason": "Claude: body.bloqueado is a scroll lock only while the position:fixed entry splash is shown; nothing positioned is clipped"
+      },
+      {
+        "rule": "marquee",
+        "value": "*",
+        "files": [
+          "public/index.html"
+        ],
+        "createdAt": "2026-10-05T17:03:28.992Z",
+        "reason": "Claude: decorative sports ticker (.cinta), aria-hidden, duplicated content, disabled under prefers-reduced-motion"
+      },
+      {
+        "rule": "all-caps-body",
+        "value": "*",
+        "files": [
+          "public/index.html"
+        ],
+        "createdAt": "2026-10-05T17:03:29.193Z",
+        "reason": "Claude: the only hit is the 41-char hero kicker label (league + season), a short letter-spaced label, not body copy"
+      }
+    ]
+  }
+}

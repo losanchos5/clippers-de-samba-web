@@ -1,0 +1,53 @@
+# Actualiza estadísticas (actas en PDF) y el respaldo del calendario, y publica en Cloudflare.
+# El calendario, resultados y clasificación ya se sirven en vivo desde /api/calendario;
+# esto mantiene al día lo que se genera en el deploy (estadísticas por jugador).
+# Secretos necesarios en GitHub: CLOUDFLARE_API_TOKEN y CLOUDFLARE_ACCOUNT_ID.
+name: Actualizar datos y publicar
+
+on:
+  schedule:
+    - cron: '0 6 * * *'        # todos los días, 07:00/08:00 en Valencia
+    - cron: '30 21 * * 6,0'    # sábado y domingo por la noche, tras la jornada
+  workflow_dispatch:           # botón «Run workflow» para lanzarlo a mano
+  push:
+    branches: [main]
+
+concurrency:
+  group: despliegue
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Caché de actas
+        uses: actions/cache@v4
+        with:
+          path: .cache/actas
+          key: actas-${{ github.run_id }}
+          restore-keys: actas-
+
+      - run: npm ci
+      - run: pip install -r requirements.txt
+
+      - name: Calendario, estadísticas y validación
+        run: npm run datos
+
+      - name: Publicar en Cloudflare
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
