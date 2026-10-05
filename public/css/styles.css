@@ -137,9 +137,43 @@ main:focus { outline: none; }
   color: var(--blanco); text-align: center;
   transition: opacity .7s var(--curva), visibility .7s;
 }
-.entrada.oculta { opacity: 0; visibility: hidden; }
-.entrada.oculta .entrada__caja { transform: scale(1.06); }
-.entrada__caja { position: relative; display: grid; justify-items: center; gap: 18px; max-width: 420px; transition: transform .7s var(--curva); }
+.entrada.oculta { opacity: 0; visibility: hidden; transition-duration: .5s; }
+.entrada__caja { position: relative; z-index: 1; display: grid; justify-items: center; gap: 18px; max-width: 420px; transition: transform .35s var(--curva), opacity .25s ease-out; }
+
+/* Transición de entrada: un balón sale del botón pulsado, gira y crece hasta tapar la
+   pantalla; después la capa se funde y la hero entra por partes. */
+.entrada__balon {
+  position: fixed; z-index: 2; left: var(--x, 50%); top: var(--y, 70%);
+  width: 96px; height: 96px; margin: -48px 0 0 -48px;
+  transform: scale(0); pointer-events: none; will-change: transform;
+}
+.entrada__balon svg { width: 100%; height: 100%; }
+.entrada.entrando .entrada__balon { animation: balon-entrada .7s cubic-bezier(.65, 0, .35, 1) forwards; }
+.entrada.entrando .entrada__caja { transform: scale(.9); opacity: 0; }
+@keyframes balon-entrada {
+  0% { transform: scale(.35) rotate(-30deg); }
+  100% { transform: scale(var(--escala, 30)) rotate(220deg); }
+}
+
+/* La hero espera tapada y entra en cascada al cruzar la pantalla de entrada */
+.con-entrada:not(.entrado) .hero__texto > *,
+.con-entrada:not(.entrado) .hero__balon { opacity: 0; }
+.entrado .hero__texto > * { animation: subir .8s var(--curva) both; }
+.entrado .hero__texto > :nth-child(1) { animation-delay: .1s; }
+.entrado .hero__texto > :nth-child(2) { animation-delay: .2s; }
+.entrado .hero__texto > :nth-child(3) { animation-delay: .32s; }
+.entrado .hero__texto > :nth-child(4) { animation-delay: .44s; }
+.entrado .hero__balon { animation: botar 1.25s .25s both; }
+@keyframes subir { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+@keyframes botar {
+  0% { opacity: 0; transform: translateY(-70vh); animation-timing-function: cubic-bezier(.5, 0, 1, 1); }
+  10% { opacity: 1; }
+  45% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, .5, 1); }
+  65% { transform: translateY(-56px); animation-timing-function: cubic-bezier(.5, 0, 1, 1); }
+  82% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, .5, 1); }
+  91% { transform: translateY(-14px); animation-timing-function: cubic-bezier(.5, 0, 1, 1); }
+  100% { opacity: 1; transform: translateY(0); }
+}
 .entrada__logo { width: min(62vw, 280px); filter: drop-shadow(0 18px 30px rgb(0 0 0 / .35)); animation: latido 3.2s ease-in-out infinite; }
 .entrada__titulo { font-size: 1.05rem; color: rgb(255 255 255 / .85); max-width: 28ch; }
 .entrada__titulo strong { display: block; font-family: var(--f-titulo); font-weight: 400; font-size: 1.25rem; letter-spacing: .04em; text-transform: uppercase; color: var(--blanco); }

@@ -52,6 +52,24 @@
   <!-- Pantalla de entrada: el clic desbloquea el audio en todos los navegadores -->
   <div class="entrada" id="entrada" role="dialog" aria-modal="true" aria-labelledby="entrada-titulo">
     <div class="entrada__ondas" aria-hidden="true"></div>
+    <div class="entrada__balon" aria-hidden="true">
+      <svg viewBox="0 0 200 200">
+        <defs>
+          <radialGradient id="cuero-entrada" cx="38%" cy="32%" r="75%">
+            <stop offset="0" stop-color="#F59A55"/>
+            <stop offset=".55" stop-color="#E8762B"/>
+            <stop offset="1" stop-color="#8A3A10"/>
+          </radialGradient>
+        </defs>
+        <circle cx="100" cy="100" r="98" fill="url(#cuero-entrada)"/>
+        <g fill="none" stroke="#1B120C" stroke-width="3" stroke-linecap="round">
+          <path d="M2 100 H198"/>
+          <path d="M100 2 V198"/>
+          <path d="M36 20 C 72 60, 72 140, 36 180"/>
+          <path d="M164 20 C 128 60, 128 140, 164 180"/>
+        </g>
+      </svg>
+    </div>
     <div class="entrada__caja">
       <img class="entrada__logo" src="/assets/logo-blanco.svg" alt="" width="946" height="1056" fetchpriority="high">
       <p class="entrada__titulo" id="entrada-titulo">Bienvenido a la casa de los <strong>Clippers de Samba</strong></p>

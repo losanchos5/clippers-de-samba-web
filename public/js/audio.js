@@ -20,12 +20,13 @@ export function iniciarAudio() {
   let fundidoActual = 0;
 
   fondo.forEach((el) => { if (el) el.inert = true; });
+  document.documentElement.classList.add('con-entrada');
   conSonido.focus({ preventScroll: true });
 
   // El MP3 pesa ~4 MB: se empieza a descargar cuando la página ya ha cargado,
   // para que no compita con el logo y las fuentes. Si se pulsa antes, play() lo pide igual.
   const precargar = () => {
-    const entroSinSonido = entrada.classList.contains('oculta') && !quiereSonido;
+    const entroSinSonido = entrada.classList.contains('entrando') && !quiereSonido;
     if (entroSinSonido || navigator.connection?.saveData) return;
     if (audio.paused && audio.currentTime === 0 && !quiereSonido) {
       audio.preload = 'auto';
@@ -88,21 +89,38 @@ export function iniciarAudio() {
     if (completo && !quiereSonido) audio.pause();
   }
 
-  function cerrarEntrada() {
-    if (entrada.classList.contains('oculta')) return;
-    entrada.classList.add('oculta');
+  const DURACION_BALON_MS = 620;
+
+  // El balón sale del centro del botón pulsado y escala hasta cubrir la esquina más lejana.
+  function cerrarEntrada(origen = conSonido) {
+    if (entrada.classList.contains('entrando')) return;
+    const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const r = origen.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+    const radio = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    entrada.style.setProperty('--x', `${x}px`);
+    entrada.style.setProperty('--y', `${y}px`);
+    entrada.style.setProperty('--escala', String(((radio * 2) / 96) * 1.08));
+    entrada.classList.add('entrando');
+
     document.body.classList.remove('bloqueado');
     fondo.forEach((el) => { if (el) el.inert = false; });
-    const esconder = () => { entrada.hidden = true; };
-    entrada.addEventListener('transitionend', (e) => { if (e.target === entrada) esconder(); });
-    setTimeout(esconder, 1000);
     contenido.focus({ preventScroll: true });
     document.dispatchEvent(new CustomEvent('clippers:entrada'));
+
+    setTimeout(() => {
+      entrada.classList.add('oculta');
+      document.documentElement.classList.add('entrado');
+      const esconder = () => { entrada.hidden = true; };
+      entrada.addEventListener('transitionend', (e) => { if (e.target === entrada) esconder(); });
+      setTimeout(esconder, 900);
+    }, reducido ? 0 : DURACION_BALON_MS);
   }
 
-  conSonido.addEventListener('click', () => { sonar(); cerrarEntrada(); });
-  sinSonido.addEventListener('click', cerrarEntrada);
-  entrada.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarEntrada(); });
+  conSonido.addEventListener('click', () => { sonar(); cerrarEntrada(conSonido); });
+  sinSonido.addEventListener('click', () => cerrarEntrada(sinSonido));
+  entrada.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarEntrada(sinSonido); });
   boton.addEventListener('click', () => (quiereSonido ? callar() : sonar()));
 
   // Cualquier pausa que no haga la propia página (pantalla de bloqueo, auriculares,
