@@ -1,16 +1,236 @@
 {
-  "actualizado": "2026-10-05T17:16:27Z",
+  "actualizado": "2026-10-05T17:41:09Z",
   "fuente": "Actas oficiales de la liga (Leverade)",
   "equipos": {
     "A": {
+      "resumen": {
+        "pj": 1,
+        "puntos": 60,
+        "puntosRival": 42,
+        "porCuarto": [
+          19,
+          10,
+          19,
+          12
+        ],
+        "porCuartoRival": [
+          10,
+          11,
+          8,
+          13
+        ],
+        "tl": {
+          "anotados": 5,
+          "intentos": 13
+        },
+        "tlRival": {
+          "anotados": 6,
+          "intentos": 14
+        },
+        "t3": 5,
+        "t2": 20,
+        "t1": 5,
+        "faltas": 17,
+        "tiemposMuertos": 0
+      },
       "partidos": [
         {
           "matchId": "145644159",
           "fecha": "2026-10-04",
           "rival": "PATERNA HELLFISH BASQUET",
+          "local": true,
           "puntos": 60,
           "puntosRival": 42,
-          "cuadra": true
+          "cuadra": true,
+          "cuartos": [
+            {
+              "clippers": 19,
+              "rival": 10
+            },
+            {
+              "clippers": 10,
+              "rival": 11
+            },
+            {
+              "clippers": 19,
+              "rival": 8
+            },
+            {
+              "clippers": 12,
+              "rival": 13
+            }
+          ],
+          "tl": {
+            "anotados": 5,
+            "intentos": 13
+          },
+          "tlRival": {
+            "anotados": 6,
+            "intentos": 14
+          },
+          "tiemposMuertos": [],
+          "jugadores": [
+            {
+              "dorsal": 0,
+              "nombreActa": "GILABERT PEREA, S",
+              "jugo": true,
+              "titular": true,
+              "puntos": 12,
+              "t1": 3,
+              "t2": 3,
+              "t3": 1,
+              "faltas": 1,
+              "faltasTipo": {
+                "P": 1
+              },
+              "porCuarto": [
+                0,
+                6,
+                2,
+                4
+              ]
+            },
+            {
+              "dorsal": 2,
+              "nombreActa": "GILABERT PEREA, X",
+              "jugo": true,
+              "titular": true,
+              "puntos": 26,
+              "t1": 0,
+              "t2": 10,
+              "t3": 2,
+              "faltas": 3,
+              "faltasTipo": {
+                "P": 3
+              },
+              "porCuarto": [
+                6,
+                2,
+                12,
+                6
+              ]
+            },
+            {
+              "dorsal": 3,
+              "nombreActa": "GARCÍA AIBAR, J.",
+              "jugo": true,
+              "titular": true,
+              "puntos": 7,
+              "t1": 0,
+              "t2": 2,
+              "t3": 1,
+              "faltas": 1,
+              "faltasTipo": {
+                "P": 1
+              },
+              "porCuarto": [
+                4,
+                0,
+                3,
+                0
+              ]
+            },
+            {
+              "dorsal": 7,
+              "nombreActa": "PEÑALVER SEBAST",
+              "jugo": true,
+              "titular": false,
+              "puntos": 0,
+              "t1": 0,
+              "t2": 0,
+              "t3": 0,
+              "faltas": 3,
+              "faltasTipo": {
+                "P": 3
+              },
+              "porCuarto": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "dorsal": 11,
+              "nombreActa": "GARCÍA VILLAR, F.",
+              "jugo": true,
+              "titular": false,
+              "puntos": 3,
+              "t1": 0,
+              "t2": 0,
+              "t3": 1,
+              "faltas": 2,
+              "faltasTipo": {
+                "P": 2
+              },
+              "porCuarto": [
+                3,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "dorsal": 13,
+              "nombreActa": "SERRANO WO",
+              "jugo": true,
+              "titular": true,
+              "puntos": 6,
+              "t1": 0,
+              "t2": 3,
+              "t3": 0,
+              "faltas": 2,
+              "faltasTipo": {
+                "P": 2
+              },
+              "porCuarto": [
+                4,
+                0,
+                0,
+                2
+              ]
+            },
+            {
+              "dorsal": 19,
+              "nombreActa": "PUCHADES ALABAU",
+              "jugo": true,
+              "titular": false,
+              "puntos": 0,
+              "t1": 0,
+              "t2": 0,
+              "t3": 0,
+              "faltas": 3,
+              "faltasTipo": {
+                "P": 3
+              },
+              "porCuarto": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "dorsal": 24,
+              "nombreActa": "NAVARRO GIL, A.",
+              "jugo": true,
+              "titular": true,
+              "puntos": 6,
+              "t1": 2,
+              "t2": 2,
+              "t3": 0,
+              "faltas": 2,
+              "faltasTipo": {
+                "P": 2
+              },
+              "porCuarto": [
+                2,
+                2,
+                2,
+                0
+              ]
+            }
+          ]
         }
       ],
       "jugadores": [
@@ -18,93 +238,477 @@
           "dorsal": 0,
           "nombreActa": "GILABERT PEREA, S",
           "pj": 1,
+          "titular": 1,
           "puntos": 12,
           "t1": 3,
           "t2": 3,
           "t3": 1,
-          "faltas": 1
+          "faltas": 1,
+          "faltasTipo": {
+            "P": 1
+          },
+          "porCuarto": [
+            0,
+            6,
+            2,
+            4
+          ],
+          "maxPuntos": 12
         },
         {
           "dorsal": 2,
           "nombreActa": "GILABERT PEREA, X",
           "pj": 1,
+          "titular": 1,
           "puntos": 26,
           "t1": 0,
           "t2": 10,
           "t3": 2,
-          "faltas": 3
+          "faltas": 3,
+          "faltasTipo": {
+            "P": 3
+          },
+          "porCuarto": [
+            6,
+            2,
+            12,
+            6
+          ],
+          "maxPuntos": 26
         },
         {
           "dorsal": 3,
           "nombreActa": "GARCÍA AIBAR, J.",
           "pj": 1,
+          "titular": 1,
           "puntos": 7,
           "t1": 0,
           "t2": 2,
           "t3": 1,
-          "faltas": 1
+          "faltas": 1,
+          "faltasTipo": {
+            "P": 1
+          },
+          "porCuarto": [
+            4,
+            0,
+            3,
+            0
+          ],
+          "maxPuntos": 7
         },
         {
           "dorsal": 7,
           "nombreActa": "PEÑALVER SEBAST",
           "pj": 1,
+          "titular": 0,
           "puntos": 0,
           "t1": 0,
           "t2": 0,
           "t3": 0,
-          "faltas": 3
+          "faltas": 3,
+          "faltasTipo": {
+            "P": 3
+          },
+          "porCuarto": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "maxPuntos": 0
         },
         {
           "dorsal": 11,
           "nombreActa": "GARCÍA VILLAR, F.",
           "pj": 1,
+          "titular": 0,
           "puntos": 3,
           "t1": 0,
           "t2": 0,
           "t3": 1,
-          "faltas": 2
+          "faltas": 2,
+          "faltasTipo": {
+            "P": 2
+          },
+          "porCuarto": [
+            3,
+            0,
+            0,
+            0
+          ],
+          "maxPuntos": 3
         },
         {
           "dorsal": 13,
           "nombreActa": "SERRANO WO",
           "pj": 1,
+          "titular": 1,
           "puntos": 6,
           "t1": 0,
           "t2": 3,
           "t3": 0,
-          "faltas": 2
+          "faltas": 2,
+          "faltasTipo": {
+            "P": 2
+          },
+          "porCuarto": [
+            4,
+            0,
+            0,
+            2
+          ],
+          "maxPuntos": 6
         },
         {
           "dorsal": 19,
           "nombreActa": "PUCHADES ALABAU",
           "pj": 1,
+          "titular": 0,
           "puntos": 0,
           "t1": 0,
           "t2": 0,
           "t3": 0,
-          "faltas": 3
+          "faltas": 3,
+          "faltasTipo": {
+            "P": 3
+          },
+          "porCuarto": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "maxPuntos": 0
         },
         {
           "dorsal": 24,
           "nombreActa": "NAVARRO GIL, A.",
           "pj": 1,
+          "titular": 1,
           "puntos": 6,
           "t1": 2,
           "t2": 2,
           "t3": 0,
-          "faltas": 2
+          "faltas": 2,
+          "faltasTipo": {
+            "P": 2
+          },
+          "porCuarto": [
+            2,
+            2,
+            2,
+            0
+          ],
+          "maxPuntos": 6
         }
       ]
     },
     "B": {
+      "resumen": {
+        "pj": 1,
+        "puntos": 40,
+        "puntosRival": 35,
+        "porCuarto": [
+          4,
+          10,
+          6,
+          20
+        ],
+        "porCuartoRival": [
+          9,
+          6,
+          9,
+          11
+        ],
+        "tl": {
+          "anotados": 6,
+          "intentos": 17
+        },
+        "tlRival": {
+          "anotados": 6,
+          "intentos": 10
+        },
+        "t3": 2,
+        "t2": 14,
+        "t1": 6,
+        "faltas": 13,
+        "tiemposMuertos": 0
+      },
       "partidos": [
         {
           "matchId": "145644524",
           "fecha": "2026-10-03",
           "rival": "AT.C. NAROVELLA `B´",
+          "local": false,
           "puntos": 40,
           "puntosRival": 35,
-          "cuadra": true
+          "cuadra": true,
+          "cuartos": [
+            {
+              "clippers": 4,
+              "rival": 9
+            },
+            {
+              "clippers": 10,
+              "rival": 6
+            },
+            {
+              "clippers": 6,
+              "rival": 9
+            },
+            {
+              "clippers": 20,
+              "rival": 11
+            }
+          ],
+          "tl": {
+            "anotados": 6,
+            "intentos": 17
+          },
+          "tlRival": {
+            "anotados": 6,
+            "intentos": 10
+          },
+          "tiemposMuertos": [],
+          "jugadores": [
+            {
+              "dorsal": 1,
+              "nombreActa": "VALLS HORMIGO, R",
+              "jugo": true,
+              "titular": true,
+              "puntos": 2,
+              "t1": 0,
+              "t2": 1,
+              "t3": 0,
+              "faltas": 2,
+              "faltasTipo": {
+                "P": 2
+              },
+              "porCuarto": [
+                0,
+                0,
+                2,
+                0
+              ]
+            },
+            {
+              "dorsal": 3,
+              "nombreActa": "GARCÍA AIBAR, J.",
+              "jugo": true,
+              "titular": false,
+              "puntos": 1,
+              "t1": 1,
+              "t2": 0,
+              "t3": 0,
+              "faltas": 1,
+              "faltasTipo": {
+                "P": 1
+              },
+              "porCuarto": [
+                0,
+                1,
+                0,
+                0
+              ]
+            },
+            {
+              "dorsal": 5,
+              "nombreActa": "GARCÍA DEL RÍO, N.",
+              "jugo": true,
+              "titular": true,
+              "puntos": 6,
+              "t1": 0,
+              "t2": 3,
+              "t3": 0,
+              "faltas": 3,
+              "faltasTipo": {
+                "P": 3
+              },
+              "porCuarto": [
+                0,
+                0,
+                2,
+                4
+              ]
+            },
+            {
+              "dorsal": 10,
+              "nombreActa": "BUJ PAREDES, A.",
+              "jugo": true,
+              "titular": true,
+              "puntos": 3,
+              "t1": 0,
+              "t2": 0,
+              "t3": 1,
+              "faltas": 1,
+              "faltasTipo": {
+                "P": 1
+              },
+              "porCuarto": [
+                0,
+                3,
+                0,
+                0
+              ]
+            },
+            {
+              "dorsal": 11,
+              "nombreActa": "GARCÍA VILLAR, F.",
+              "jugo": true,
+              "titular": false,
+              "puntos": 0,
+              "t1": 0,
+              "t2": 0,
+              "t3": 0,
+              "faltas": 1,
+              "faltasTipo": {
+                "P": 1
+              },
+              "porCuarto": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "dorsal": 13,
+              "nombreActa": "SERRANO WOOD, N",
+              "jugo": true,
+              "titular": false,
+              "puntos": 0,
+              "t1": 0,
+              "t2": 0,
+              "t3": 0,
+              "faltas": 0,
+              "faltasTipo": {},
+              "porCuarto": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "dorsal": 21,
+              "nombreActa": "TAMARIT CAMACHO",
+              "jugo": true,
+              "titular": true,
+              "puntos": 4,
+              "t1": 4,
+              "t2": 0,
+              "t3": 0,
+              "faltas": 1,
+              "faltasTipo": {
+                "P": 1
+              },
+              "porCuarto": [
+                0,
+                2,
+                0,
+                2
+              ]
+            },
+            {
+              "dorsal": 22,
+              "nombreActa": "CAÑADA PORTET, P",
+              "jugo": true,
+              "titular": false,
+              "puntos": 4,
+              "t1": 0,
+              "t2": 2,
+              "t3": 0,
+              "faltas": 1,
+              "faltasTipo": {
+                "P": 1
+              },
+              "porCuarto": [
+                0,
+                2,
+                2,
+                0
+              ]
+            },
+            {
+              "dorsal": 23,
+              "nombreActa": "GONZÁLEZ TÁRREG",
+              "jugo": true,
+              "titular": false,
+              "puntos": 0,
+              "t1": 0,
+              "t2": 0,
+              "t3": 0,
+              "faltas": 1,
+              "faltasTipo": {
+                "P": 1
+              },
+              "porCuarto": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "dorsal": 24,
+              "nombreActa": "NAVARRO GIL, A.",
+              "jugo": true,
+              "titular": false,
+              "puntos": 15,
+              "t1": 1,
+              "t2": 7,
+              "t3": 0,
+              "faltas": 1,
+              "faltasTipo": {
+                "P": 1
+              },
+              "porCuarto": [
+                4,
+                2,
+                0,
+                9
+              ]
+            },
+            {
+              "dorsal": 25,
+              "nombreActa": "GASCÓ LLOPIS, P.",
+              "jugo": true,
+              "titular": true,
+              "puntos": 5,
+              "t1": 0,
+              "t2": 1,
+              "t3": 1,
+              "faltas": 1,
+              "faltasTipo": {
+                "P": 1
+              },
+              "porCuarto": [
+                0,
+                0,
+                0,
+                5
+              ]
+            },
+            {
+              "dorsal": 87,
+              "nombreActa": "SERRANO WO",
+              "jugo": false,
+              "titular": false,
+              "puntos": 0,
+              "t1": 0,
+              "t2": 0,
+              "t3": 0,
+              "faltas": 0,
+              "faltasTipo": {},
+              "porCuarto": [
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          ]
         }
       ],
       "jugadores": [
@@ -112,121 +716,249 @@
           "dorsal": 1,
           "nombreActa": "VALLS HORMIGO, R",
           "pj": 1,
+          "titular": 1,
           "puntos": 2,
           "t1": 0,
           "t2": 1,
           "t3": 0,
-          "faltas": 2
+          "faltas": 2,
+          "faltasTipo": {
+            "P": 2
+          },
+          "porCuarto": [
+            0,
+            0,
+            2,
+            0
+          ],
+          "maxPuntos": 2
         },
         {
           "dorsal": 3,
           "nombreActa": "GARCÍA AIBAR, J.",
           "pj": 1,
+          "titular": 0,
           "puntos": 1,
           "t1": 1,
           "t2": 0,
           "t3": 0,
-          "faltas": 1
+          "faltas": 1,
+          "faltasTipo": {
+            "P": 1
+          },
+          "porCuarto": [
+            0,
+            1,
+            0,
+            0
+          ],
+          "maxPuntos": 1
         },
         {
           "dorsal": 5,
           "nombreActa": "GARCÍA DEL RÍO, N.",
           "pj": 1,
+          "titular": 1,
           "puntos": 6,
           "t1": 0,
           "t2": 3,
           "t3": 0,
-          "faltas": 3
+          "faltas": 3,
+          "faltasTipo": {
+            "P": 3
+          },
+          "porCuarto": [
+            0,
+            0,
+            2,
+            4
+          ],
+          "maxPuntos": 6
         },
         {
           "dorsal": 10,
           "nombreActa": "BUJ PAREDES, A.",
           "pj": 1,
+          "titular": 1,
           "puntos": 3,
           "t1": 0,
           "t2": 0,
           "t3": 1,
-          "faltas": 1
+          "faltas": 1,
+          "faltasTipo": {
+            "P": 1
+          },
+          "porCuarto": [
+            0,
+            3,
+            0,
+            0
+          ],
+          "maxPuntos": 3
         },
         {
           "dorsal": 11,
           "nombreActa": "GARCÍA VILLAR, F.",
           "pj": 1,
+          "titular": 0,
           "puntos": 0,
           "t1": 0,
           "t2": 0,
           "t3": 0,
-          "faltas": 1
+          "faltas": 1,
+          "faltasTipo": {
+            "P": 1
+          },
+          "porCuarto": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "maxPuntos": 0
         },
         {
           "dorsal": 13,
           "nombreActa": "SERRANO WOOD, N",
           "pj": 1,
+          "titular": 0,
           "puntos": 0,
           "t1": 0,
           "t2": 0,
           "t3": 0,
-          "faltas": 0
+          "faltas": 0,
+          "faltasTipo": {},
+          "porCuarto": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "maxPuntos": 0
         },
         {
           "dorsal": 21,
           "nombreActa": "TAMARIT CAMACHO",
           "pj": 1,
+          "titular": 1,
           "puntos": 4,
           "t1": 4,
           "t2": 0,
           "t3": 0,
-          "faltas": 1
+          "faltas": 1,
+          "faltasTipo": {
+            "P": 1
+          },
+          "porCuarto": [
+            0,
+            2,
+            0,
+            2
+          ],
+          "maxPuntos": 4
         },
         {
           "dorsal": 22,
           "nombreActa": "CAÑADA PORTET, P",
           "pj": 1,
+          "titular": 0,
           "puntos": 4,
           "t1": 0,
           "t2": 2,
           "t3": 0,
-          "faltas": 1
+          "faltas": 1,
+          "faltasTipo": {
+            "P": 1
+          },
+          "porCuarto": [
+            0,
+            2,
+            2,
+            0
+          ],
+          "maxPuntos": 4
         },
         {
           "dorsal": 23,
           "nombreActa": "GONZÁLEZ TÁRREG",
           "pj": 1,
+          "titular": 0,
           "puntos": 0,
           "t1": 0,
           "t2": 0,
           "t3": 0,
-          "faltas": 1
+          "faltas": 1,
+          "faltasTipo": {
+            "P": 1
+          },
+          "porCuarto": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "maxPuntos": 0
         },
         {
           "dorsal": 24,
           "nombreActa": "NAVARRO GIL, A.",
           "pj": 1,
+          "titular": 0,
           "puntos": 15,
           "t1": 1,
           "t2": 7,
           "t3": 0,
-          "faltas": 1
+          "faltas": 1,
+          "faltasTipo": {
+            "P": 1
+          },
+          "porCuarto": [
+            4,
+            2,
+            0,
+            9
+          ],
+          "maxPuntos": 15
         },
         {
           "dorsal": 25,
           "nombreActa": "GASCÓ LLOPIS, P.",
           "pj": 1,
+          "titular": 1,
           "puntos": 5,
           "t1": 0,
           "t2": 1,
           "t3": 1,
-          "faltas": 1
+          "faltas": 1,
+          "faltasTipo": {
+            "P": 1
+          },
+          "porCuarto": [
+            0,
+            0,
+            0,
+            5
+          ],
+          "maxPuntos": 5
         },
         {
           "dorsal": 87,
           "nombreActa": "SERRANO WO",
           "pj": 0,
+          "titular": 0,
           "puntos": 0,
           "t1": 0,
           "t2": 0,
           "t3": 0,
-          "faltas": 0
+          "faltas": 0,
+          "faltasTipo": {},
+          "porCuarto": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "maxPuntos": 0
         }
       ]
     }

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizarEquipo } from '../src/swish.js';
+import { normalizarEquipo, normalizarLiga } from '../src/swish.js';
 
 const CLIPPERS = { id: 'c', name: 'CLIPPERS DE SAMBA `B´', logo: null };
 const NAROVELLA = { id: 'n', name: 'AT.C. NAROVELLA `B´', logo: 'https://cdn.leverade.com/thumbnails/AaogUi1SP2s7.500x500.jpg' };
@@ -61,4 +61,20 @@ test('ordena la clasificación por posición y marca a Clippers', () => {
     [2, 'AT.C. NAROVELLA B', false],
   ]);
   assert.deepEqual([equipo.posicion, equipo.total, equipo.stats.pg, equipo.stats.pp], [1, 2, 1, 0]);
+});
+
+test('la liga asigna cada marcador a su equipo y marca los partidos de Clippers', () => {
+  const { jornadas } = normalizarLiga(calendario, clasificacion, grupo);
+  assert.deepEqual(jornadas.map((j) => j.numero), [1, 2, 3, 4]);
+
+  const [conClippers, otro] = jornadas[0].partidos;
+  assert.equal(conClippers.clippers, true);
+  assert.deepEqual([conClippers.local.nombre, conClippers.local.puntos], ['AT.C. NAROVELLA B', 35]);
+  assert.deepEqual([conClippers.visitante.nombre, conClippers.visitante.puntos], ['CLIPPERS DE SAMBA B', 40]);
+  assert.equal(otro.clippers, false);
+  assert.deepEqual([otro.local.puntos, otro.visitante.puntos], [50, 48]);
+
+  const sinJugar = jornadas[1].partidos[0];
+  assert.equal(sinJugar.jugado, false);
+  assert.deepEqual([sinJugar.local.puntos, sinJugar.visitante.puntos], [null, null]);
 });

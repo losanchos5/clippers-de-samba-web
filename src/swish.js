@@ -124,25 +124,59 @@ function redondear(n) {
   return typeof n === 'number' ? Math.round(n * 10) / 10 : null;
 }
 
-export async function obtenerCalendario(apiKey = API_KEY_PUBLICA) {
-  const salida = {
-    temporada: TEMPORADA,
-    competicion: COMPETICION,
-    actualizado: new Date().toISOString(),
-    fuente: 'swish',
-    equipos: {},
-    clasificacion: {},
+// Todos los partidos del grupo, por jornada, para la sección «La liga».
+export function normalizarLiga(calendario, clasificacion, grupo) {
+  const clippers = clasificacion.find((t) => CLUB.test(t.name))?.teamId;
+  const equipo = (t, totales) => ({
+    nombre: limpiarNombre(t?.name),
+    logo: logoLocal(t?.logo),
+    puntos: totales[t?.id] ?? null,
+  });
+  const jornadas = calendario.rounds.map((ronda, indice) => ({
+    numero: numeroJornada(ronda.name, indice),
+    partidos: ronda.matches.map((m) => {
+      const totales = Object.fromEntries((m.score?.totals ?? []).map((t) => [t.teamId, t.total]));
+      const jugado = JUGADO.has(m.status) && totales[m.homeTeam?.id] != null && totales[m.awayTeam?.id] != null;
+      const local = equipo(m.homeTeam, jugado ? totales : {});
+      const visitante = equipo(m.awayTeam, jugado ? totales : {});
+      return {
+        id: m.id,
+        ...horaMadrid(m.date),
+        estado: m.status,
+        jugado,
+        clippers: m.homeTeam?.id === clippers || m.awayTeam?.id === clippers,
+        local,
+        visitante,
+      };
+    }).sort((a, b) => (Date.parse(a.inicio ?? '') || Infinity) - (Date.parse(b.inicio ?? '') || Infinity)),
+  })).sort((a, b) => a.numero - b.numero);
+  return { division: grupo.division, jornadas };
+}
+
+// Una sola ronda de peticiones a la liga para las dos salidas: el calendario de
+// Clippers (/api/calendario) y todos los partidos de cada grupo (/api/liga).
+export async function obtenerTodo(apiKey = API_KEY_PUBLICA) {
+  const actualizado = new Date().toISOString();
+  const calendario = {
+    temporada: TEMPORADA, competicion: COMPETICION, actualizado, fuente: 'swish', equipos: {}, clasificacion: {},
   };
+  const liga = { temporada: TEMPORADA, competicion: COMPETICION, actualizado, grupos: {}, clasificacion: {} };
   await Promise.all(Object.entries(GRUPOS).map(async ([clave, grupo]) => {
-    const [calendario, clasificacion] = await Promise.all([
+    const [cal, tabla] = await Promise.all([
       pedir(`calendar?groupId=${grupo.id}`, apiKey),
       pedir(`standings?groupId=${grupo.id}`, apiKey),
     ]);
-    const { equipo, clasificacion: tabla } = normalizarEquipo(calendario, clasificacion, grupo);
-    salida.equipos[clave] = equipo;
-    salida.clasificacion[clave] = tabla;
+    const { equipo, clasificacion } = normalizarEquipo(cal, tabla, grupo);
+    calendario.equipos[clave] = equipo;
+    calendario.clasificacion[clave] = clasificacion;
+    liga.grupos[clave] = normalizarLiga(cal, tabla, grupo);
+    liga.clasificacion[clave] = clasificacion;
   }));
-  return salida;
+  return { calendario, liga };
+}
+
+export async function obtenerCalendario(apiKey = API_KEY_PUBLICA) {
+  return (await obtenerTodo(apiKey)).calendario;
 }
 
 // Lista temporadas, competiciones y grupos para actualizar GRUPOS en una nueva temporada.

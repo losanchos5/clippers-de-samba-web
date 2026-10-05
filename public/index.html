@@ -93,6 +93,8 @@
         <li><a href="#club">El club</a></li>
         <li><a href="#equipos">Equipos</a></li>
         <li><a href="#calendario">Calendario</a></li>
+        <li><a href="#liga">La liga</a></li>
+        <li><a href="#estadisticas">Estadísticas</a></li>
         <li><a href="#equipacion">Equipación</a></li>
         <li><a href="#instagram">Instagram</a></li>
         <li><a href="#unete">Únete</a></li>
@@ -226,22 +228,41 @@
               <ol class="partidos" id="partidos"></ol>
               <button class="btn btn--contorno partidos__mas" id="ver-todos" type="button" aria-controls="partidos" aria-expanded="false" hidden>Ver calendario completo</button>
             </div>
-            <div id="bloque-clasificacion" hidden>
-              <h3 class="subtitulo">Clasificación</h3>
-              <div class="tabla-envoltura">
-                <table class="clasificacion" id="clasificacion">
-                  <thead><tr><th scope="col">#</th><th scope="col">Equipo</th><th scope="col"><abbr title="Partidos jugados">PJ</abbr></th><th scope="col"><abbr title="Ganados">G</abbr></th><th scope="col"><abbr title="Perdidos">P</abbr></th><th scope="col"><abbr title="Diferencia de puntos">Dif</abbr></th></tr></thead>
-                  <tbody></tbody>
-                </table>
-              </div>
-            </div>
           </div>
         </div>
+        <a class="calendario__liga" href="#liga">Resultados y clasificación de toda la liga <span aria-hidden="true">→</span></a>
         <p class="calendario__pie">
           <span id="actualizado"></span>
           Todos los partidos se juegan en <a data-config-href="sede.mapa" href="#" target="_blank" rel="noopener">L'Alqueria del Basket</a>.
           Datos oficiales en la <a data-config-href="liga.web" href="#" target="_blank" rel="noopener">web de la liga</a> y en la app <a data-config-href="liga.app" href="#" target="_blank" rel="noopener">Swish</a>.
         </p>
+      </div>
+    </section>
+
+    <!-- LA LIGA -->
+    <section class="seccion seccion--clara liga" id="liga" aria-labelledby="liga-titulo">
+      <div class="contenedor">
+        <p class="etiqueta">Liga Senior Quirónsalud · <span data-config="temporada">26/27</span></p>
+        <h2 class="titulo" id="liga-titulo">La liga</h2>
+        <div class="pestanas pestanas--oscuras" role="tablist" aria-label="División" data-grupo-equipo>
+          <button role="tab" type="button" id="tab-liga-A" aria-controls="panel-liga" aria-selected="true" data-equipo="A">Tercera <small>Clippers A</small></button>
+          <button role="tab" type="button" id="tab-liga-B" aria-controls="panel-liga" aria-selected="false" tabindex="-1" data-equipo="B">Quinta <small>Clippers B</small></button>
+        </div>
+        <div class="panel" id="panel-liga" role="tabpanel" aria-labelledby="tab-liga-A"></div>
+      </div>
+    </section>
+
+    <!-- ESTADISTICAS -->
+    <section class="seccion estadisticas" id="estadisticas" aria-labelledby="estadisticas-titulo">
+      <div class="contenedor">
+        <p class="etiqueta">Actas oficiales · <span data-config="temporada">26/27</span></p>
+        <h2 class="titulo" id="estadisticas-titulo">Estadísticas</h2>
+        <div class="pestanas pestanas--oscuras" role="tablist" aria-label="Equipo" data-grupo-equipo>
+          <button role="tab" type="button" id="tab-est-A" aria-controls="panel-estadisticas" aria-selected="true" data-equipo="A">Clippers A <small>Tercera</small></button>
+          <button role="tab" type="button" id="tab-est-B" aria-controls="panel-estadisticas" aria-selected="false" tabindex="-1" data-equipo="B">Clippers B <small>Quinta</small></button>
+        </div>
+        <div class="panel" id="panel-estadisticas" role="tabpanel" aria-labelledby="tab-est-A"></div>
+        <p class="est-fuente">Sacadas de las actas oficiales de cada partido. El acta solo recoge canastas, tiros libres, faltas, titulares y el tanteo por cuartos: la liga no registra minutos, rebotes, asistencias ni +/-, así que no aparecen.</p>
       </div>
     </section>
 

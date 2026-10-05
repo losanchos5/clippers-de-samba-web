@@ -9,8 +9,14 @@ estática servida por un Worker de Cloudflare, sin framework ni build.
 - Balón 3D en la hero (three.js en local). Se puede arrastrar y acelera con el scroll.
 - **Calendario, resultados y clasificación en vivo** desde la API pública de la liga, en
   `/api/calendario`, con 10 min de caché en Cloudflare.
-- **Plantillas y estadísticas** (puntos, triples, máximos anotadores) sacadas de las actas oficiales
-  en PDF.
+- **La liga:** todos los partidos de Tercera y Quinta por jornada, con escudos, y la clasificación
+  completa, en `/api/liga`. Se carga al llegar a la sección.
+- **Estadísticas** sacadas de las actas oficiales en PDF:
+  - por jugador: puntos, puntos por partido, máximo, % del equipo, triples, canastas de 2, tiros libres,
+    faltas, titularidades y puntos por cuarto;
+  - por equipo: tanteo por cuartos y tiros libres anotados/intentados;
+  - partido a partido.
+  Las actas no recogen minutos, rebotes, asistencias ni +/-; no hay fotos de jugadores públicas.
 - Mobile-first, sin cookies y sin peticiones a terceros desde el navegador. CSP estricta en
   `public/_headers`.
 
@@ -26,7 +32,7 @@ estática servida por un Worker de Cloudflare, sin framework ni build.
 | `npm run dev` | Web en local con el Worker: http://localhost:8787 |
 | `npm run datos` | Actualiza el respaldo del calendario y las estadísticas, y valida los JSON |
 | `npm run deploy` | `datos` y luego publica en Cloudflare |
-| `npm test` | Tests unitarios + smoke e2e (móvil y escritorio) |
+| `npm test` | Tests unitarios (JS y Python) + smoke e2e (móvil y escritorio) |
 | `npm run validar` | Solo valida `public/datos/*.json` |
 
 ## Qué editar
@@ -52,6 +58,8 @@ ejecuta `npm run validar`.
   las actas en PDF (caché en `.cache/actas/`) y suma los puntos y tiros de cada dorsal. Un partido
   solo cuenta si la suma cuadra con el marcador final. Hay que volver a ejecutarlo tras cada
   jornada; `npm run deploy` lo hace solo.
+- **Todos los partidos de la liga:** misma API, servidos en `/api/liga`. Respaldo en
+  `public/datos/liga.json`.
 - **Escudos de los rivales:** se sirven a través de `/api/logo/…` (proxy con caché de 7 días).
 
 **Nueva temporada:** `node scripts/calendario.mjs --descubrir` lista los grupos de la competición.

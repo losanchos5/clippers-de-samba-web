@@ -27,6 +27,8 @@ export const CONFIG = {
   // datos en vivo de la liga; si falla, se usa la copia estática del último deploy.
   fuentes: {
     calendario: ['/api/calendario', '/datos/partidos.json'],
+    // Todos los partidos de Tercera y Quinta (sección «La liga»); se carga al llegar a ella
+    liga: ['/api/liga', '/datos/liga.json'],
     equipos: ['/datos/equipos.json'],
     // Puntos, tiros y faltas por jugador, sacados de las actas (scripts/estadisticas.py)
     estadisticas: ['/datos/estadisticas.json'],

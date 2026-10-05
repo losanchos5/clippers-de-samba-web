@@ -1,5 +1,8 @@
 import { CONFIG } from './config.js';
 import { iniciarAudio } from './audio.js';
+import { h, svg } from './dom.js';
+import { pintarEstadisticas, reiniciarEstadisticas } from './estadisticas.js';
+import { pintarLiga } from './liga.js';
 
 const ZONA = 'Europe/Madrid';
 const PARTIDOS_VISIBLES = 6;
@@ -11,33 +14,11 @@ const estado = {
   calendario: undefined,
   plantillas: undefined,
   estadisticas: undefined,
+  liga: undefined,
   verTodos: false,
 };
 
 // ---------- Utilidades ----------
-
-// Crea nodos sin innerHTML: los nombres de equipos vienen de una API externa.
-function h(etiqueta, atributos = {}, ...hijos) {
-  const nodo = document.createElement(etiqueta);
-  for (const [clave, valor] of Object.entries(atributos)) {
-    if (valor == null || valor === false) continue;
-    if (clave === 'class') nodo.className = valor;
-    else if (clave === 'style') Object.entries(valor).forEach(([k, v]) => nodo.style.setProperty(k, v));
-    else nodo.setAttribute(clave, valor === true ? '' : valor);
-  }
-  for (const hijo of hijos.flat()) {
-    if (hijo == null || hijo === false) continue;
-    nodo.append(hijo instanceof Node ? hijo : String(hijo));
-  }
-  return nodo;
-}
-
-function svg(etiqueta, atributos = {}, ...hijos) {
-  const nodo = document.createElementNS('http://www.w3.org/2000/svg', etiqueta);
-  for (const [clave, valor] of Object.entries(atributos)) nodo.setAttribute(clave, valor);
-  nodo.append(...hijos);
-  return nodo;
-}
 
 function leer(objeto, ruta) {
   return ruta.split('.').reduce((o, k) => (o == null ? o : o[k]), objeto);
@@ -177,6 +158,13 @@ function elegirEquipo(clave) {
   });
   pintarEquipo();
   pintarCalendario();
+  reiniciarEstadisticas();
+  pintarSeccionEstadisticas();
+  pintarLiga(estado.liga, estado.equipo);
+}
+
+function pintarSeccionEstadisticas() {
+  pintarEstadisticas({ clave: estado.equipo, estadisticas: estado.estadisticas, plantillas: estado.plantillas });
 }
 
 // ---------- Equipos ----------
@@ -328,7 +316,6 @@ function pintarCalendario() {
   if (!equipo) {
     lista.replaceChildren(h('li', { class: 'partidos__vacio' }, 'El calendario no está disponible ahora mismo. Consulta la web oficial de la liga.'));
     boton.hidden = true;
-    document.getElementById('bloque-clasificacion').hidden = true;
     return;
   }
 
@@ -340,21 +327,14 @@ function pintarCalendario() {
   boton.hidden = equipo.partidos.length <= limite;
   boton.setAttribute('aria-expanded', String(estado.verTodos));
   boton.textContent = estado.verTodos ? 'Ver menos' : `Ver calendario completo (${equipo.partidos.length})`;
+}
 
-  const tabla = datos.clasificacion?.[estado.equipo] ?? [];
-  const bloque = document.getElementById('bloque-clasificacion');
-  bloque.hidden = tabla.length === 0;
-  document.querySelector('#clasificacion tbody').replaceChildren(...tabla.map((t) => {
-    const dif = t.dif ?? (t.ppp != null && t.pcpp != null ? Math.round((t.ppp - t.pcpp) * t.pj) : 0);
-    return h('tr', { class: t.clippers ? 'es-clippers' : null },
-      h('td', {}, t.pos),
-      h('td', {}, h('span', { class: 'clasificacion__equipo' },
-        t.logo ? h('img', { src: t.logo, alt: '', width: 22, height: 22, loading: 'lazy', decoding: 'async' }) : null,
-        t.equipo)),
-      h('td', {}, t.pj), h('td', {}, t.pg), h('td', {}, t.pp),
-      h('td', {}, dif > 0 ? `+${dif}` : dif),
-    );
-  }));
+function iniciales(nombre) {
+  return nombre.split(/\s+/).filter((w) => /^[A-ZÁÉÍÓÚÑ]/i.test(w)).slice(0, 2).map((w) => w[0]).join('');
+}
+
+function ladoDuelo(nombre, escudo) {
+  return h('div', { class: 'duelo__equipo' }, h('span', { class: 'duelo__marco' }, escudo), h('span', { class: 'duelo__nombre' }, nombre));
 }
 
 function cuentaAtras(inicio) {
@@ -389,11 +369,13 @@ function pintarProximos() {
       return h('article', { class: 'proximo proximo--vacio' }, cabecera,
         h('p', { class: 'proximo__duelo' }, 'Próximas fechas por confirmar'), resumenUltimo);
     }
-    const nosotros = h('span', {}, NOMBRE_EQUIPO[clave]);
-    const ellos = h('span', {}, p.rival);
+    const nosotros = ladoDuelo(NOMBRE_EQUIPO[clave], h('img', { class: 'duelo__escudo', src: '/assets/escudo-verde.webp', alt: '', width: 64, height: 56 }));
+    const ellos = ladoDuelo(p.rival, p.rivalLogo
+      ? h('img', { class: 'duelo__escudo', src: p.rivalLogo, alt: '', width: 64, height: 64, loading: 'lazy', decoding: 'async' })
+      : h('span', { class: 'duelo__escudo duelo__escudo--vacio', 'aria-hidden': 'true' }, iniciales(p.rival)));
     return h('article', { class: 'proximo', 'aria-label': `Próximo partido de ${NOMBRE_EQUIPO[clave]}` },
       cabecera,
-      h('p', { class: 'proximo__duelo' }, p.local ? nosotros : ellos, h('span', { class: 'proximo__vs' }, 'vs'), p.local ? ellos : nosotros),
+      h('div', { class: 'duelo' }, p.local ? nosotros : ellos, h('span', { class: 'proximo__vs' }, 'vs'), p.local ? ellos : nosotros),
       h('p', { class: 'proximo__cuando' }, `${sinPunto(fmtLargo.format(new Date(p.inicio)))} · ${p.hora} · ${p.local ? 'En casa' : 'Fuera'} · L'Alqueria`),
       cuentaAtras(p.inicio),
       resumenUltimo,
@@ -439,12 +421,27 @@ function cargarDatos() {
   cargarJSON(CONFIG.fuentes.equipos).then((datos) => {
     estado.plantillas = datos;
     pintarEquipo();
+    pintarSeccionEstadisticas();
   });
   cargarJSON(CONFIG.fuentes.estadisticas).then((datos) => {
     estado.estadisticas = datos;
     pintarEquipo();
+    pintarSeccionEstadisticas();
   });
   setInterval(pintarProximos, 30_000);
+
+  // La liga entera pesa más: se pide al acercarse a su sección.
+  pintarLiga(undefined, estado.equipo);
+  const seccionLiga = document.getElementById('liga');
+  const observador = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return;
+    observador.disconnect();
+    cargarJSON(CONFIG.fuentes.liga, 10_000).then((datos) => {
+      estado.liga = datos;
+      pintarLiga(estado.liga, estado.equipo);
+    });
+  }, { rootMargin: '800px 0px' });
+  observador.observe(seccionLiga);
 }
 
 // El balón 3D (three.js + textura generada) solo se carga al cruzar la pantalla de

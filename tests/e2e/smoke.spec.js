@@ -61,6 +61,7 @@ test('entrar con sonido arranca la música y la web carga equipos y calendario',
 
   await expect(page.locator('#partidos .partido').first()).toBeVisible();
   await expect(page.locator('#plantilla .jugador').first()).toBeVisible();
+  await expect(page.locator('#panel-estadisticas .est-tabla tbody tr').first()).toBeVisible();
 
   await page.locator('#tab-cal-B').click();
   await expect(page.locator('#tab-equipos-B')).toHaveAttribute('aria-selected', 'true');
