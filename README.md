@@ -11,6 +11,10 @@ estática servida por un Worker de Cloudflare, sin framework ni build.
   `/api/calendario`, con 10 min de caché en Cloudflare.
 - **La liga:** todos los partidos de Tercera y Quinta por jornada, con escudos, y la clasificación
   completa, en `/api/liga`. Se carga al llegar a la sección.
+- **Partido a partido y en directo:** al pulsar un partido jugado del Calendario se abre una ventana
+  con marcador, puntos por cuarto y estadística por jugador (puntos, canastas de 2 y 3, tiros libres,
+  faltas, minutos y +/-), servida por `/api/partido/<id>`. Mientras se juega pone «En directo» y se
+  refresca cada minuto (solo con la ventana abierta). Solo partidos de Clippers.
 - **Estadísticas** sacadas de las actas oficiales en PDF:
   - por jugador: puntos, puntos por partido, máximo, % del equipo, triples, canastas de 2, tiros libres,
     faltas, titularidades y puntos por cuarto;
@@ -60,6 +64,14 @@ ejecuta `npm run validar`.
   jornada; `npm run deploy` lo hace solo.
 - **Todos los partidos de la liga:** misma API, servidos en `/api/liga`. Respaldo en
   `public/datos/liga.json`.
+- **Un partido (marcador, cuartos y estadística por jugador):** misma API (`match/<id>`,
+  `match/<id>/players`, `match/<id>/stats/players`), en `/api/partido/<id>`. El Worker solo acepta
+  ids de partidos de Clippers y cachea 60 s si se está jugando, 1 día si ha terminado y 10 min si no:
+  las visitas simultáneas comparten una sola lectura y los fallos se recuerdan 30 s. En la práctica es
+  una tanda de 3 peticiones por minuto y centro de datos de Cloudflare (la caché del edge es por centro). La mesa no apunta
+  rebotes, asistencias, robos ni tiros fallados de campo; esas columnas no se muestran. La liga nunca
+  ha mandado el estado `LIVE`, así que «en directo» se deduce por la hora: desde 15 min antes del
+  inicio hasta 3 h después, mientras no esté cerrado.
 - **Escudos de los rivales:** se sirven a través de `/api/logo/…` (proxy con caché de 7 días).
 
 **Nueva temporada:** `node scripts/calendario.mjs --descubrir` lista los grupos de la competición.

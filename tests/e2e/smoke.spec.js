@@ -91,3 +91,53 @@ test('el próximo partido se elige por fecha aunque una jornada anterior esté a
   await expect(proximoA).toContainText('Último: victoria 60–42');
   await expect(page.locator('#partidos .partido--proximo')).toContainText('RIVAL TRES');
 });
+
+// Respuesta de /api/partido/<id> con la forma que da el Worker.
+const PARTIDO_A1 = {
+  id: 'a1', estado: 'CLOSED', cerrado: true, enJuego: false, inicio: '2026-10-04T14:20:00.000Z', fecha: '2026-10-04', hora: '16:20',
+  acta: 'https://storage.googleapis.com/acta.pdf',
+  local: {
+    nombre: 'CLIPPERS DE SAMBA A', logo: null, clippers: true, puntos: 60, cuartos: [19, 10, 19, 12],
+    jugadores: [{ dorsal: 2, nombre: 'Xavier Gilabert', pts: 26, t2: 10, t3: 2, tl: { m: 0, i: 0 }, faltas: 3, min: 32, masMenos: 25 }],
+  },
+  visitante: {
+    nombre: 'RIVAL UNO', logo: null, clippers: false, puntos: 42, cuartos: [10, 11, 8, 13],
+    jugadores: [{ dorsal: 4, nombre: 'Sergio Gomez', pts: 12, t2: 6, t3: 0, tl: { m: 0, i: 0 }, faltas: 2, min: 30, masMenos: -10 }],
+  },
+  columnas: ['pts', 't2', 't3', 'faltas', 'min', 'masMenos'],
+  actualizado: '2026-10-05T10:00:00.000Z',
+};
+
+test('pulsar un partido jugado abre su marcador, cuartos y estadística', async ({ page }) => {
+  await simularLiga(page);
+  await page.route('**/api/partido/a1', (r) => r.fulfill({ json: PARTIDO_A1 }));
+  await page.goto('/');
+  await page.locator('#entrar-sin-sonido').click();
+
+  await page.locator('#partidos .partido', { hasText: 'RIVAL UNO' }).getByRole('button', { name: 'Ver estadística' }).click();
+  const ventana = page.locator('#partido-dialogo');
+  await expect(ventana).toBeVisible();
+  await expect(ventana.locator('.ficha__tanteo')).toHaveText('60–42');
+  await expect(ventana.locator('.ficha__cuartos')).toContainText('19');
+  await expect(ventana.locator('.ficha__jugadores').first()).toContainText('Xavier Gilabert');
+  await expect(ventana.locator('.ficha__jugadores').first()).toContainText('+25');
+
+  await ventana.getByRole('button', { name: 'Cerrar' }).click();
+  await expect(ventana).toBeHidden();
+});
+
+test('un partido en su horario sale en directo aunque la liga no mande el estado LIVE', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-10-25T16:00:00Z')); // J3 empezó a las 15:20 UTC
+  await simularLiga(page);
+  await page.route('**/api/partido/a3', (r) => r.fulfill({
+    json: { ...PARTIDO_A1, id: 'a3', estado: 'NOT_STARTED', cerrado: false, enJuego: true, local: { ...PARTIDO_A1.local, puntos: 20 }, visitante: { ...PARTIDO_A1.visitante, nombre: 'RIVAL TRES', puntos: 18 } },
+  }));
+  await page.goto('/');
+  await page.locator('#entrar-sin-sonido').click();
+
+  await expect(page.locator('#partidos .partido', { hasText: 'RIVAL TRES' })).toContainText('En directo');
+  await page.locator('#proximos').getByRole('button', { name: 'Ver en directo' }).first().click();
+  const ventana = page.locator('#partido-dialogo');
+  await expect(ventana.locator('.ficha__tanteo')).toHaveText('20–18');
+  await expect(ventana).toContainText('Se actualiza cada minuto');
+});

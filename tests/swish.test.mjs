@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizarEquipo, normalizarLiga } from '../src/swish.js';
+import { normalizarEquipo, normalizarLiga, normalizarPartido } from '../src/swish.js';
 
 const CLIPPERS = { id: 'c', name: 'CLIPPERS DE SAMBA `B´', logo: null };
 const NAROVELLA = { id: 'n', name: 'AT.C. NAROVELLA `B´', logo: 'https://cdn.leverade.com/thumbnails/AaogUi1SP2s7.500x500.jpg' };
@@ -77,4 +77,68 @@ test('la liga asigna cada marcador a su equipo y marca los partidos de Clippers'
   const sinJugar = jornadas[1].partidos[0];
   assert.equal(sinJugar.jugado, false);
   assert.deepEqual([sinJugar.local.puntos, sinJugar.visitante.puntos], [null, null]);
+});
+
+// Forma de match/<id>, match/<id>/players y match/<id>/stats/players de Swish.
+function stat(teamId, playerId, extra) {
+  return {
+    teamId, playerId, points: 0, inArcThrowsMade: 0, inArcThrowsFailed: 0, outArcThrowsMade: 0, outArcThrowsFailed: 0,
+    freeThrowsMade: 0, freeThrowsFailed: 0, fouls: 0, timePlayed: 0, plusMinus: 0, assists: 0, steals: 0, ...extra,
+  };
+}
+const MATCH = {
+  id: 'm1', date: '2026-10-04T14:20:00.000Z', status: 'CLOSED', scoresheetUrl: 'https://acta.pdf',
+  homeTeam: CLIPPERS, awayTeam: POBLA,
+  score: {
+    totals: [{ teamId: 'c', total: 9 }, { teamId: 'p', total: 2 }],
+    // desordenados a propósito: la API no garantiza el orden
+    partials: [{ teamId: 'c', period: 2, partial: 4 }, { teamId: 'p', period: 1, partial: 2 }, { teamId: 'c', period: 1, partial: 5 }, { teamId: 'p', period: 2, partial: 0 }],
+  },
+};
+const FICHAS = [
+  { teamId: 'c', id: 'j7', name: 'Ana', lastName: 'Ruiz', number: '7' },
+  { teamId: 'c', id: 'j4', name: 'Leo', lastName: 'Gil', number: '4' },
+  { teamId: 'p', id: 'r9', name: 'Rival', lastName: 'Uno', number: '9' },
+];
+const STATS = [
+  stat('c', 'j4', { points: 2, inArcThrowsMade: 1, fouls: 1, timePlayed: 610 }),
+  stat('c', 'j7', { points: 7, outArcThrowsMade: 2, freeThrowsMade: 1, freeThrowsFailed: 1, timePlayed: 1200, plusMinus: 7 }),
+  stat('p', 'r9', { points: 2, inArcThrowsMade: 1, timePlayed: 1800, plusMinus: -7 }),
+  stat('c', 'hueco'), // fila a cero sin ficha, como las que manda Swish
+];
+
+test('el partido reparte a cada jugador en su equipo con dorsal, nombre y tiros', () => {
+  const p = normalizarPartido(MATCH, FICHAS, STATS);
+  assert.deepEqual([p.local.nombre, p.local.puntos, p.local.clippers], ['CLIPPERS DE SAMBA B', 9, true]);
+  assert.deepEqual([p.visitante.puntos, p.visitante.clippers], [2, false]);
+  assert.deepEqual(p.local.jugadores.map((j) => [j.dorsal, j.nombre, j.pts]), [[7, 'Ana Ruiz', 7], [4, 'Leo Gil', 2]]);
+  assert.deepEqual(p.local.jugadores[0].tl, { m: 1, i: 2 });
+  assert.deepEqual([p.local.jugadores[1].min, p.local.jugadores[1].t2], [10, 1]);
+  assert.deepEqual(p.visitante.jugadores.map((j) => j.dorsal), [9]);
+  assert.equal(p.acta, 'https://acta.pdf');
+  assert.equal(normalizarPartido({ ...MATCH, scoresheetUrl: 'javascript:alert(1)' }).acta, null);
+});
+
+test('los cuartos salen en orden aunque la API los mande desordenados', () => {
+  const p = normalizarPartido(MATCH, FICHAS, STATS);
+  assert.deepEqual([p.local.cuartos, p.visitante.cuartos], [[5, 4], [2, 0]]);
+  // Si falta un periodo, el siguiente no se corre a su columna
+  const sinPrimero = { ...MATCH, score: { ...MATCH.score, partials: [{ teamId: 'c', period: 2, partial: 4 }] } };
+  assert.deepEqual(normalizarPartido(sinPrimero).local.cuartos, [null, 4]);
+});
+
+test('solo hay columnas para los datos que la mesa ha apuntado', () => {
+  const sinFaltasNiMasMenos = STATS.map((s) => ({ ...s, fouls: 0, plusMinus: 0 }));
+  assert.deepEqual(normalizarPartido(MATCH, FICHAS, sinFaltasNiMasMenos).columnas, ['pts', 't2', 't3', 'tl', 'min']);
+  assert.deepEqual(normalizarPartido({ ...MATCH, status: 'NOT_STARTED' }, [], []).columnas, []);
+});
+
+test('sin estado LIVE, el partido cuenta como en juego solo dentro de su horario', () => {
+  const inicio = Date.parse(MATCH.date);
+  const sinCerrar = { ...MATCH, status: 'NOT_STARTED' };
+  assert.equal(normalizarPartido(sinCerrar, [], [], inicio + 3600e3).enJuego, true);
+  assert.equal(normalizarPartido(sinCerrar, [], [], inicio - 3600e3).enJuego, false);
+  assert.equal(normalizarPartido(sinCerrar, [], [], inicio + 4 * 3600e3).enJuego, false);
+  assert.equal(normalizarPartido(MATCH, [], [], inicio + 3600e3).enJuego, false); // ya cerrado
+  assert.equal(normalizarPartido({ ...MATCH, status: 'LIVE' }, [], [], inicio + 5 * 3600e3).enJuego, true);
 });

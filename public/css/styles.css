@@ -687,3 +687,40 @@ main:focus { outline: none; }
 .error404 .contenedor { display: grid; justify-items: center; gap: 12px; }
 .error404 img { width: 110px; }
 .error404 .btn { margin-top: 16px; }
+
+/* ---------- Ventana de un partido (marcador y estadística) ---------- */
+.partido { position: relative; }
+.partido--abrible { transition: box-shadow .2s var(--curva), transform .2s var(--curva); }
+.partido--abrible:hover { box-shadow: inset 0 0 0 2px var(--verde-vivo); transform: translateY(-1px); }
+/* El botón cubre la tarjeta entera; su texto solo lo leen los lectores de pantalla. */
+.partido__abrir { position: absolute; inset: 0; border: 0; border-radius: var(--radio); background: none; color: transparent; font-size: 0; cursor: pointer; }
+.partido__abrir:focus-visible { outline: 3px solid var(--naranja); outline-offset: 2px; }
+.chapa--directo { background: #C62828; color: var(--blanco); gap: 6px; grid-auto-flow: column; }
+.chapa--directo::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: latido 1.2s ease-in-out infinite; }
+@keyframes latido { 50% { opacity: .25; } }
+.proximo__directo { margin-top: 10px; }
+
+.ficha { width: min(760px, calc(100% - 24px)); max-height: calc(100dvh - 24px); padding: 0; border: 0; border-radius: var(--radio); background: var(--hueso); color: var(--tinta); box-shadow: var(--sombra); }
+.ficha::backdrop { background: rgb(0 26 10 / .7); }
+.ficha[open] { animation: aparecer .3s var(--curva) both; }
+.ficha__caja { display: grid; grid-template-rows: auto 1fr; max-height: inherit; }
+.ficha__cabecera { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; background: var(--verde); color: var(--blanco); }
+.ficha__titulo { font-family: var(--f-titulo); font-weight: 400; font-size: 1rem; letter-spacing: .04em; margin: 0; }
+.ficha__cerrar { width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgb(255 255 255 / .12); color: inherit; font-size: 1.6rem; line-height: 1; cursor: pointer; flex: none; }
+.ficha__cerrar:hover { background: rgb(255 255 255 / .24); }
+.ficha__cuerpo { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 18px; overflow-y: auto; }
+.ficha__estado { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--gris); font-size: .9rem; flex-wrap: wrap; text-align: center; }
+.ficha__marcador { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; text-align: center; }
+.ficha__equipo { display: grid; justify-items: center; gap: 6px; font-weight: 700; font-size: .85rem; line-height: 1.2; overflow-wrap: anywhere; }
+.ficha__equipo--clippers { color: var(--verde); }
+.ficha__escudo { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; background: var(--verde-tinte); }
+.ficha__escudo--vacio { display: grid; place-items: center; font-family: var(--f-dorsal); color: var(--verde); }
+.ficha__tanteo { font-family: var(--f-dorsal); font-size: clamp(2rem, 8vw, 3rem); line-height: 1; white-space: nowrap; }
+.ficha__cuartos th[scope="row"] { text-align: left; font-family: var(--f-texto); font-weight: 700; font-size: .8rem; color: inherit; letter-spacing: 0; border: 0; }
+.ficha__bloque .subtitulo { margin-bottom: 8px; }
+.ficha__jugadores td:nth-child(2) { white-space: nowrap; }
+.ficha__jugadores--clippers td:nth-child(3) { color: var(--verde); font-weight: 700; }
+.ficha__pie { font-size: .82rem; color: var(--gris); text-align: center; }
+@media (prefers-reduced-motion: reduce) { .chapa--directo::before, .ficha[open] { animation: none; } }
+.ficha__cuartos th:nth-child(2), .ficha__cuartos td:nth-child(2) { text-align: center; }
+.ficha__cuartos th:first-child { text-align: left; }

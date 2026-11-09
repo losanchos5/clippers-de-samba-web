@@ -1,6 +1,7 @@
 import { CONFIG } from './config.js';
 import { iniciarAudio } from './audio.js';
-import { h, svg } from './dom.js';
+import { cargarJSON, h, svg } from './dom.js';
+import { iniciarPartido, partidoEnJuego } from './partido.js';
 import { pintarEstadisticas, reiniciarEstadisticas } from './estadisticas.js';
 import { pintarLiga } from './liga.js';
 
@@ -22,22 +23,6 @@ const estado = {
 
 function leer(objeto, ruta) {
   return ruta.split('.').reduce((o, k) => (o == null ? o : o[k]), objeto);
-}
-
-async function cargarJSON(rutas, tiempoMaxMs = 6000) {
-  for (const ruta of rutas) {
-    const control = new AbortController();
-    const temporizador = setTimeout(() => control.abort(), tiempoMaxMs);
-    try {
-      const res = await fetch(ruta, { headers: { Accept: 'application/json' }, signal: control.signal });
-      if (res.ok) return await res.json();
-    } catch {
-      // probamos la siguiente fuente
-    } finally {
-      clearTimeout(temporizador);
-    }
-  }
-  return null;
 }
 
 const fmtDia = new Intl.DateTimeFormat('es-ES', { day: 'numeric', timeZone: ZONA });
@@ -256,7 +241,7 @@ function etiquetaEstado(p, esProximo) {
     const gana = p.resultado.clippers > p.resultado.rival;
     return h('span', { class: `chapa ${gana ? 'chapa--v' : 'chapa--d'}`, title: gana ? 'Victoria' : 'Derrota' }, gana ? 'V' : 'D');
   }
-  if (p.estado === 'LIVE') return h('span', { class: 'chapa chapa--prox' }, 'En juego');
+  if (partidoEnJuego(p)) return h('span', { class: 'chapa chapa--directo' }, 'En directo');
   if (p.estado === 'DEFERRED') return h('span', { class: 'chapa chapa--d' }, 'Aplazado');
   if (esProximo) return h('span', { class: 'chapa chapa--prox' }, 'Próximo');
   return null;
@@ -269,10 +254,20 @@ function rivalConLogo(p) {
   ];
 }
 
+// Botón que cubre toda la tarjeta (ver .partido__abrir) y abre la ventana del partido.
+function botonPartido(p, texto) {
+  const titulo = `${p.local ? 'vs' : '@'} ${p.rival} · Jornada ${p.jornada}`;
+  return h('button', {
+    type: 'button', class: 'partido__abrir', 'data-partido': p.id, 'data-titulo': titulo,
+    'data-directo': partidoEnJuego(p), 'aria-label': `${texto}: ${titulo}`,
+  }, texto);
+}
+
 function itemPartido(p, i, idProximo) {
   const fecha = p.inicio ? new Date(p.inicio) : null;
   const esProximo = p.id === idProximo;
-  return h('li', { class: `partido${p.resultado ? ' partido--jugado' : ''}${esProximo ? ' partido--proximo' : ''}`, style: { '--i': i } },
+  const abrible = p.resultado || partidoEnJuego(p);
+  return h('li', { class: `partido${p.resultado ? ' partido--jugado' : ''}${esProximo ? ' partido--proximo' : ''}${abrible ? ' partido--abrible' : ''}`, style: { '--i': i } },
     h('div', { class: 'partido__fecha', 'aria-hidden': 'true' },
       h('span', { class: 'partido__dia' }, fecha ? fmtDia.format(fecha) : `J${p.jornada}`),
       h('span', { class: 'partido__mes' }, fecha ? sinPunto(fmtMes.format(fecha)) : 's/f'),
@@ -288,6 +283,7 @@ function itemPartido(p, i, idProximo) {
       p.resultado ? h('span', { class: 'marcador', 'aria-label': `${p.resultado.clippers} a ${p.resultado.rival}` }, `${p.resultado.clippers}–${p.resultado.rival}`) : null,
       etiquetaEstado(p, esProximo),
     ),
+    abrible ? botonPartido(p, partidoEnJuego(p) ? 'Ver en directo' : 'Ver estadística') : null,
   );
 }
 
@@ -350,6 +346,12 @@ function cuentaAtras(inicio) {
   );
 }
 
+function botonEnDirecto(p) {
+  const boton = botonPartido(p, 'Ver en directo');
+  boton.className = 'btn btn--primario proximo__directo';
+  return boton;
+}
+
 function pintarProximos() {
   const caja = document.getElementById('proximos');
   const equipos = estado.calendario?.equipos;
@@ -378,6 +380,7 @@ function pintarProximos() {
       h('div', { class: 'duelo' }, p.local ? nosotros : ellos, h('span', { class: 'proximo__vs' }, 'vs'), p.local ? ellos : nosotros),
       h('p', { class: 'proximo__cuando' }, `${sinPunto(fmtLargo.format(new Date(p.inicio)))} · ${p.hora} · ${p.local ? 'En casa' : 'Fuera'} · L'Alqueria`),
       cuentaAtras(p.inicio),
+      partidoEnJuego(p) ? h('p', {}, botonEnDirecto(p)) : null,
       resumenUltimo,
     );
   }));
@@ -459,6 +462,7 @@ iniciarAudio();
 iniciarCabecera();
 iniciarPestanas();
 iniciarTilt();
+iniciarPartido();
 document.getElementById('ver-todos').addEventListener('click', () => {
   estado.verTodos = !estado.verTodos;
   pintarCalendario();

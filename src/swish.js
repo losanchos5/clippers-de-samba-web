@@ -179,6 +179,95 @@ export async function obtenerCalendario(apiKey = API_KEY_PUBLICA) {
   return (await obtenerTodo(apiKey)).calendario;
 }
 
+// ---------- Un partido: marcador, cuartos y estadística por jugador (/api/partido/<id>) ----------
+
+// La mesa de nuestra liga solo apunta puntos, canastas, tiros libres, faltas, minutos y +/-.
+// Rebotes, asistencias, robos, tapones y fallos de 2/3 llegan a 0, así que no se usan.
+const COLUMNAS = ['pts', 't2', 't3', 'tl', 'faltas', 'min', 'masMenos'];
+const ANTES_MS = 15 * 60e3;
+const DESPUES_MS = 3 * 3600e3;
+
+// Nunca se ha visto el estado LIVE en esta liga: si no llega, se deduce por la hora.
+// Mantener en sincronía con partidoEnJuego de public/js/partido.js.
+export function partidoEnJuego(estado, inicio, ahora = Date.now()) {
+  if (estado === 'LIVE') return true;
+  if (estado === 'CLOSED' || estado === 'FINISHED' || estado === 'DEFERRED' || !inicio) return false;
+  const t = Date.parse(inicio);
+  return ahora >= t - ANTES_MS && ahora <= t + DESPUES_MS;
+}
+
+function filaJugador(st, ficha) {
+  const n = (v) => (typeof v === 'number' ? v : 0);
+  const dorsal = Number.parseInt(ficha?.number, 10);
+  return {
+    dorsal: Number.isNaN(dorsal) ? null : dorsal,
+    nombre: [ficha?.name, ficha?.lastName].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim() || 'Jugador',
+    pts: n(st.points),
+    t2: n(st.inArcThrowsMade),
+    t3: n(st.outArcThrowsMade),
+    tl: { m: n(st.freeThrowsMade), i: n(st.freeThrowsMade) + n(st.freeThrowsFailed) },
+    faltas: n(st.fouls),
+    min: Math.round(n(st.timePlayed) / 60),
+    masMenos: n(st.plusMinus),
+  };
+}
+
+// Cada parcial en la casilla de su periodo; si falta uno, queda null y no se corre de columna.
+function cuartosDe(parciales, teamId) {
+  const cuartos = [];
+  for (const p of parciales) if (p.teamId === teamId && p.period >= 1) cuartos[p.period - 1] = p.partial;
+  return Array.from(cuartos, (v) => v ?? null);
+}
+
+export function normalizarPartido(match, players = [], stats = [], ahora = Date.now()) {
+  const fichas = new Map(players.map((p) => [p.id, p]));
+  const totales = Object.fromEntries((match.score?.totals ?? []).map((t) => [t.teamId, t.total]));
+  // Swish mete filas a cero sin ficha (huecos del acta): fuera, salvo que tengan puntos.
+  const filas = stats
+    .filter((st) => fichas.has(st.playerId) || st.points > 0)
+    .map((st) => ({ teamId: st.teamId, fila: filaJugador(st, fichas.get(st.playerId)) }));
+
+  const lado = (t) => ({
+    nombre: limpiarNombre(t?.name),
+    logo: logoLocal(t?.logo),
+    clippers: CLUB.test(t?.name ?? ''),
+    puntos: totales[t?.id] ?? null,
+    cuartos: cuartosDe(match.score?.partials ?? [], t?.id),
+    jugadores: filas
+      .filter((f) => f.teamId === t?.id)
+      .map((f) => f.fila)
+      .sort((a, b) => b.pts - a.pts || (a.dorsal ?? 999) - (b.dorsal ?? 999)),
+  });
+  const local = lado(match.homeTeam);
+  const visitante = lado(match.awayTeam);
+
+  const todos = [...local.jugadores, ...visitante.jugadores];
+  const columnas = COLUMNAS.filter((c) => todos.some((j) => (c === 'tl' ? j.tl.i > 0 : j[c] !== 0)));
+  const hora = horaMadrid(match.date);
+
+  return {
+    id: match.id,
+    estado: match.status,
+    cerrado: JUGADO.has(match.status),
+    enJuego: partidoEnJuego(match.status, hora.inicio, ahora),
+    ...hora,
+    acta: /^https:\/\//.test(match.scoresheetUrl ?? '') ? match.scoresheetUrl : null, // va a un href
+    local,
+    visitante,
+    columnas,
+    actualizado: new Date(ahora).toISOString(),
+  };
+}
+
+export async function obtenerPartido(id, apiKey = API_KEY_PUBLICA) {
+  const [match, players, stats] = await Promise.all([
+    pedir(`match/${id}`, apiKey),
+    pedir(`match/${id}/players`, apiKey),
+    pedir(`match/${id}/stats/players`, apiKey),
+  ]);
+  return normalizarPartido(match, players, stats);
+}
+
 // Lista temporadas, competiciones y grupos para actualizar GRUPOS en una nueva temporada.
 export async function descubrir(apiKey = API_KEY_PUBLICA) {
   const temporadas = await pedir('seasons', apiKey);

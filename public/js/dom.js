@@ -20,3 +20,20 @@ export function svg(etiqueta, atributos = {}, ...hijos) {
   nodo.append(...hijos);
   return nodo;
 }
+
+// Prueba cada ruta en orden y devuelve el primer JSON que llegue; null si fallan todas.
+export async function cargarJSON(rutas, tiempoMaxMs = 6000) {
+  for (const ruta of rutas) {
+    const control = new AbortController();
+    const temporizador = setTimeout(() => control.abort(), tiempoMaxMs);
+    try {
+      const res = await fetch(ruta, { headers: { Accept: 'application/json' }, signal: control.signal });
+      if (res.ok) return await res.json();
+    } catch {
+      // probamos la siguiente fuente
+    } finally {
+      clearTimeout(temporizador);
+    }
+  }
+  return null;
+}
