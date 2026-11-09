@@ -570,6 +570,38 @@ def acumular(total: dict[int, dict[str, Any]], partido: dict[int, dict[str, Any]
     return nuevo
 
 
+def clave_nombre(nombre: str) -> str:
+    """«FERRER SOLER, M.» y «FERRER SOLER, M» son la misma persona."""
+    return " ".join(nombre.upper().replace(".", " ").split())
+
+
+def fusionar_dorsales(jugadores: dict[int, dict[str, Any]], ultimo_dorsal: dict[str, int]) -> dict[int, dict[str, Any]]:
+    """Un jugador que ha cambiado de dorsal (mismo nombre en el acta) se suma en una sola fila,
+    con el dorsal del último partido que jugó. Las fichas de cada partido conservan el dorsal
+    que llevó ese día."""
+    grupos: dict[str, list[dict[str, Any]]] = {}
+    for j in jugadores.values():
+        grupos.setdefault(clave_nombre(j["nombreActa"]), []).append(j)
+    nuevo: dict[int, dict[str, Any]] = {}
+    for clave, filas in grupos.items():
+        if len(filas) == 1:
+            nuevo[filas[0]["dorsal"]] = filas[0]
+            continue
+        dorsal = ultimo_dorsal.get(clave, max(filas, key=lambda f: f["pj"])["dorsal"])
+        nuevo[dorsal] = {
+            "dorsal": dorsal,
+            "nombreActa": max((f["nombreActa"] for f in filas), key=len),
+            "dorsales": sorted(f["dorsal"] for f in filas),
+            "pj": sum(f["pj"] for f in filas),
+            "titular": sum(f["titular"] for f in filas),
+            **{campo: sum(f[campo] for f in filas) for campo in CAMPOS_SUMABLES},
+            "faltasTipo": dict(sum((Counter(f["faltasTipo"]) for f in filas), Counter())),
+            "porCuarto": reduce(sumar_listas, (f["porCuarto"] for f in filas), []),
+            "maxPuntos": max(f["maxPuntos"] for f in filas),
+        }
+    return nuevo
+
+
 def resumen_equipo(partidos: list[dict[str, Any]]) -> dict[str, Any]:
     """Totales del equipo en los partidos cuyo acta cuadra. Un dato que no se pudo leer en un
     partido (p. ej. los tiempos muertos) solo suma con los partidos que sí lo tienen."""
@@ -632,6 +664,7 @@ def procesar_equipo(clave: str, cfg: dict[str, str]) -> ResultadoEquipo:
     )
     partidos: list[dict[str, Any]] = []
     jugadores: dict[int, dict[str, Any]] = {}
+    ultimo_dorsal: dict[str, int] = {}  # nombre del acta → dorsal del último partido jugado
     analizados = descartados = actas_leidas = fallos_descarga = 0
     for m in jugados:
         es_local = m["meta"]["home_team"] == team_id
@@ -678,6 +711,9 @@ def procesar_equipo(clave: str, cfg: dict[str, str]) -> ResultadoEquipo:
                 for nota in analisis.avisos:
                     aviso(f"{etiqueta}: {nota}")
                 jugadores = acumular(jugadores, analisis.stats)
+                for d, s in analisis.stats.items():
+                    if s["jugo"]:
+                        ultimo_dorsal[clave_nombre(s["nombreActa"])] = d
                 ficha = {**analisis.detalle, "jugadores": jugadores_partido(analisis.stats)}
             else:
                 aviso(f"{etiqueta}: el acta no cuadra ({'; '.join(analisis.problemas)}); "
@@ -691,6 +727,7 @@ def procesar_equipo(clave: str, cfg: dict[str, str]) -> ResultadoEquipo:
             descartados += 1
         partidos.append({**partido, "puntos": puntos, "puntosRival": puntos_rival, "cuadra": cuadra, **ficha})
 
+    jugadores = fusionar_dorsales(jugadores, ultimo_dorsal)
     return ResultadoEquipo(
         partidos=partidos,
         jugadores=[jugadores[d] for d in sorted(jugadores)],

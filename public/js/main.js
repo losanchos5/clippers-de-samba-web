@@ -2,7 +2,7 @@ import { CONFIG } from './config.js';
 import { iniciarAudio } from './audio.js';
 import { cargarJSON, h, svg } from './dom.js';
 import { iniciarPartido, partidoEnJuego } from './partido.js';
-import { pintarEstadisticas, reiniciarEstadisticas } from './estadisticas.js';
+import { nombreDesdeActa, pintarEstadisticas, reiniciarEstadisticas } from './estadisticas.js';
 import { pintarLiga } from './liga.js';
 
 const ZONA = 'Europe/Madrid';
@@ -163,9 +163,21 @@ function camiseta(dorsal) {
   );
 }
 
+// equipos.json más los jugadores que han jugado (actas) y no están en él, con el nombre del acta.
+// Así la plantilla no se queda vieja cuando juega alguien nuevo.
+function plantillaCompleta(clave) {
+  const plantilla = estado.plantillas?.[clave];
+  const conocidos = new Set((plantilla?.jugadores ?? []).map((j) => j.dorsal));
+  const nuevos = (estado.estadisticas?.equipos?.[clave]?.jugadores ?? [])
+    .filter((j) => j.pj > 0 && !conocidos.has(j.dorsal))
+    .map((j) => ({ dorsal: j.dorsal, nombre: nombreDesdeActa(j.nombreActa) }));
+  if (!plantilla && !nuevos.length) return plantilla;
+  return { ...plantilla, jugadores: [...(plantilla?.jugadores ?? []), ...nuevos] };
+}
+
 function pintarEquipo() {
   const clave = estado.equipo;
-  const plantilla = estado.plantillas?.[clave];
+  const plantilla = plantillaCompleta(clave);
   const liga = estado.calendario?.equipos?.[clave];
   const panel = document.getElementById('panel-equipos');
 

@@ -15,7 +15,7 @@ const periodo = (i) => NOMBRE_PERIODO[i] ?? `Pr${i - 3}`;
 const fecha = (iso) => (iso ? fmtFecha.format(new Date(`${iso}T12:00:00Z`)).replace('.', '') : '');
 
 // «GILABERT PEREA, X» → «X. Gilabert Perea» (si el jugador no está en equipos.json)
-function nombreDesdeActa(nombre = '') {
+export function nombreDesdeActa(nombre = '') {
   const menores = new Set(['de', 'del', 'la', 'las', 'los', 'y']);
   const titulo = (t) => t.toLowerCase().split(/\s+/).map((w) => (menores.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1))).join(' ');
   const [apellidos, inicial] = nombre.split(',').map((x) => x.trim());

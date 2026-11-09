@@ -97,5 +97,18 @@ class ActaClippersVisitante(unittest.TestCase):
         self.assertEqual((temporada[13]["pj"], temporada[87]["pj"]), (1, 0))
 
 
+    def test_jugador_que_cambia_de_dorsal_suma_en_una_fila(self):
+        def fila(dorsal, nombre, pj, puntos, cuartos):
+            return {"dorsal": dorsal, "nombreActa": nombre, "pj": pj, "titular": pj, "puntos": puntos, "t1": 0,
+                    "t2": 0, "t3": 0, "faltas": 1, "faltasTipo": {"P": 1}, "porCuarto": cuartos, "maxPuntos": puntos}
+        jugadores = {0: fila(0, "FERRER SOLER, M.", 1, 24, [10, 14]), 96: fila(96, "FERRER SOLER, M", 1, 11, [6, 5]),
+                     13: fila(13, "SERRANO WOOD, N", 1, 2, [2, 0]), 87: fila(87, "SERRANO WOOD, M", 1, 0, [0, 0])}
+        total = est.fusionar_dorsales(jugadores, {est.clave_nombre("FERRER SOLER, M"): 96})
+        self.assertEqual(sorted(total), [13, 87, 96])  # otra inicial = otra persona
+        ferrer = total[96]
+        self.assertEqual((ferrer["pj"], ferrer["puntos"], ferrer["maxPuntos"], ferrer["dorsales"]), (2, 35, 24, [0, 96]))
+        self.assertEqual((ferrer["porCuarto"], ferrer["faltasTipo"]), ([16, 19], {"P": 2}))
+
+
 if __name__ == "__main__":
     unittest.main()
