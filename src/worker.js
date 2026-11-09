@@ -15,6 +15,7 @@ const CACHE_LOGO_S = 604800;
 const CACHE_LOGO_FALLO_S = 3600;
 const LOGO = /^\/api\/logo\/([A-Za-z0-9_-]{6,40})\.(jpg|jpeg|png)$/;
 const TIPOS_IMAGEN = /^image\/(jpeg|png|webp)$/;
+const MEDIA = /^\/assets\/(video|audio)\/[\w-]+\.(mp4|mp3)$/;
 const PARTIDO = /^\/api\/partido\/([a-f0-9]{24})$/;
 const CACHE_PARTIDO_S = { enJuego: 60, cerrado: 86400, otro: 600 };
 
@@ -41,6 +42,7 @@ export default {
     const partido = PARTIDO.exec(url.pathname);
     if (partido) return datosPartido(request, env, ctx, partido[1]);
     if (url.pathname.startsWith('/api/')) return json({ error: 'No encontrado' }, 404);
+    if (MEDIA.test(url.pathname) && request.headers.has('Range')) return conRango(request, env);
     return env.ASSETS.fetch(request);
   },
 };
@@ -157,6 +159,30 @@ function respuestaPartido(cuerpo, segundos) {
       'X-Content-Type-Options': 'nosniff',
     },
   });
+}
+
+// Safari (iPhone) solo reproduce vídeo y audio si el servidor responde a peticiones Range
+// con 206, y los assets estáticos del Worker no lo hacen: se recorta aquí.
+async function conRango(request, env) {
+  const original = await env.ASSETS.fetch(new Request(request.url, { method: 'GET' }));
+  if (!original.ok) return original;
+  const datos = await original.arrayBuffer();
+  const total = datos.byteLength;
+  const m = /^bytes=(\d*)-(\d*)$/.exec(request.headers.get('Range') ?? '');
+  let inicio = m?.[1] ? Number(m[1]) : null;
+  let fin = m?.[2] ? Number(m[2]) : null;
+  if (inicio === null && fin !== null) { inicio = Math.max(0, total - fin); fin = total - 1; } // «bytes=-500»: los últimos
+  inicio ??= 0;
+  fin = Math.min(fin ?? total - 1, total - 1);
+  const cabeceras = new Headers(original.headers);
+  cabeceras.set('Accept-Ranges', 'bytes');
+  if (!m || inicio > fin) {
+    cabeceras.set('Content-Range', `bytes */${total}`);
+    return new Response(null, { status: 416, headers: cabeceras });
+  }
+  cabeceras.set('Content-Range', `bytes ${inicio}-${fin}/${total}`);
+  cabeceras.set('Content-Length', String(fin - inicio + 1));
+  return new Response(request.method === 'HEAD' ? null : datos.slice(inicio, fin + 1), { status: 206, headers: cabeceras });
 }
 
 function respuestaJSON(cuerpo, maxAge = 300) {

@@ -4,7 +4,8 @@ Web del club de baloncesto **Clippers de Samba** (Valencia). El club tiene dos e
 Senior Quirónsalud de L'Alqueria del Basket: **A en Tercera** y **B en Quinta**. Es una página única
 estática servida por un Worker de Cloudflare, sin framework ni build.
 
-- Pantalla de entrada con «Entrar 🔊». Al pulsar suena *Mas Que Nada* desde 0:21. Los navegadores
+- Pantalla de entrada con «Entrar 🔊». Al pulsar suena *Magalenha* desde 0:40 y
+  arranca a la vez el vídeo de fondo de la hero (en blanco y negro, con la capa verde encima). Los navegadores
   no dejan sonar audio sin un gesto del usuario, por eso existe esa pantalla.
 - Balón 3D en la hero (three.js en local). Se puede arrastrar y acelera con el scroll.
 - **Calendario, resultados y clasificación en vivo** desde la API pública de la liga, en
@@ -106,9 +107,12 @@ libre al crear la cuenta. En la bio de Instagram pon el enlace a la web.
 
 ## Avisos
 
-- **Música:** *Mas Que Nada* (Sérgio Mendes) tiene derechos de autor. Publicarla sin licencia es
-  responsabilidad del club. Para quitarla, borra `public/assets/audio/mas-que-nada.mp3` y el
-  `<audio>` de `index.html`.
+- **Música y vídeo:** *Magalenha* (Sérgio Mendes, audio desde 0:40) y el vídeo de fondo
+  («Brazilian Samba Dance: The Bohemian Samba Life with Malandros and Sambistas», desde 0:37)
+  tienen derechos de autor; el club dice tener permiso. Para quitarlos, borra
+  `public/assets/audio/magalenha.mp3`, `public/assets/video/` y el `<audio>` y el `<video>` de
+  `index.html`. El vídeo va en blanco y negro y sin sonido: `hero.mp4` (960×540) para pantallas apaisadas y
+  `hero-movil.mp4` (432×768, recorte central) para móviles en vertical.
 - **Datos personales:** los nombres de los jugadores salen de las actas públicas de la liga, pero
   publicarlos en la web del club requiere su consentimiento (RGPD). Revisa `equipos.json` antes de
   publicar. Algunos nombres vienen cortados en el acta («Peñalver Sebast», «González Tárreg»).

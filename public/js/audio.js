@@ -23,7 +23,7 @@ export function iniciarAudio() {
   document.documentElement.classList.add('con-entrada');
   conSonido.focus({ preventScroll: true });
 
-  // El MP3 pesa ~4 MB: se empieza a descargar cuando la página ya ha cargado,
+  // El MP3 pesa ~1,6 MB: se empieza a descargar cuando la página ya ha cargado,
   // para que no compita con el logo y las fuentes. Si se pulsa antes, play() lo pide igual.
   const precargar = () => {
     const entroSinSonido = entrada.classList.contains('entrando') && !quiereSonido;
@@ -39,7 +39,7 @@ export function iniciarAudio() {
 
   if ('mediaSession' in navigator && 'MediaMetadata' in window) {
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: 'Mas Que Nada',
+      title: 'Magalenha',
       artist: 'Sérgio Mendes',
       album: 'Clippers de Samba',
       artwork: [{ src: '/icon-512.png', sizes: '512x512', type: 'image/png' }],

@@ -286,8 +286,22 @@ main:focus { outline: none; }
   display: flex; align-items: center;
 }
 .hero__fondo { opacity: .9; }
+/* Vídeo en blanco y negro de fondo; encima, el mismo degradado verde de la hero con transparencia. */
+.hero { isolation: isolate; }
+.hero__video { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.hero::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(90% 60% at 70% 40%, var(--verde) 0%, var(--verde-oscuro) 55%, var(--verde-noche) 100%);
+  opacity: .84;
+}
 .hero__rejilla { position: relative; display: grid; gap: 8px; align-items: center; }
 .hero__texto { display: grid; justify-items: center; text-align: center; }
+/* Velo verde con bordes difuminados solo detrás del texto: el vídeo sigue viéndose alrededor. */
+.hero__texto { position: relative; isolation: isolate; }
+.hero__texto::before {
+  content: ""; position: absolute; inset: -48px -72px; z-index: -1; pointer-events: none;
+  background: radial-gradient(closest-side, rgb(0 26 10 / .93) 55%, rgb(0 26 10 / .66) 78%, transparent);
+}
 .hero__titulo { width: min(100%, 540px); margin: 18px 0 14px; }
 /* Rótulo original del logo (trazado vectorial), con sombra desplazada estilo camiseta */
 .wm { width: 100%; height: auto; filter: drop-shadow(4px 6px 0 var(--verde-medio)); }

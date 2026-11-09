@@ -469,7 +469,36 @@ function cargarBalon() {
   }, { once: true });
 }
 
+// Vídeo de fondo de la hero (samba, desde 0:37 del original, en blanco y negro). Versión vertical en
+// móviles en vertical. Con «menos movimiento» o ahorro de datos solo se ve el póster.
+function iniciarVideoHero() {
+  const video = document.getElementById('hero-video');
+  const audio = document.getElementById('musica');
+  if (!video) return;
+  const vertical = matchMedia('(max-aspect-ratio: 1/1)').matches;
+  const base = `/assets/video/hero${vertical ? '-movil' : ''}`;
+  video.poster = `${base}.webp`;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || navigator.connection?.saveData) return;
+  video.src = `${base}.mp4`;
+
+  // Arranca al cruzar la pantalla de entrada, cuando el navegador queda libre: así sus MB no
+  // retrasan los datos de la liga. Luego se pone a la altura de la canción (sincronizar).
+  document.addEventListener('clippers:entrada', () => {
+    const arrancar = () => video.play().catch(() => {}); // si el móvil lo bloquea, se queda el póster
+    if ('requestIdleCallback' in window) requestIdleCallback(arrancar, { timeout: 2500 });
+    else setTimeout(arrancar, 1200);
+  }, { once: true });
+  // El vídeo tarda un poco en cargar, y la música puede pausarse y reanudarse:
+  // en esos casos el vídeo se recoloca a la altura de la canción.
+  const sincronizar = () => {
+    if (!audio.paused && video.duration) video.currentTime = audio.currentTime % video.duration;
+  };
+  video.addEventListener('playing', sincronizar, { once: true });
+  audio.addEventListener('play', sincronizar);
+}
+
 aplicarConfig();
+iniciarVideoHero();
 iniciarAudio();
 iniciarCabecera();
 iniciarPestanas();
