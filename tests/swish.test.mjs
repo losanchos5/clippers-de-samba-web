@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizarEquipo, normalizarLiga, normalizarPartido, relojDe } from '../src/swish.js';
+import { normalizarEquipo, normalizarLiga, normalizarPartido, relojDe, conCuartoEnCurso } from '../src/swish.js';
 
 const CLIPPERS = { id: 'c', name: 'CLIPPERS DE SAMBA `B´', logo: null };
 const NAROVELLA = { id: 'n', name: 'AT.C. NAROVELLA `B´', logo: 'https://cdn.leverade.com/thumbnails/AaogUi1SP2s7.500x500.jpg' };
@@ -148,4 +148,15 @@ test('el reloj de match/<id>/status pasa de ms restantes a segundos, y se ignora
   assert.equal(relojDe(null), null); // la petición de status falló
   assert.equal(relojDe({ status: 'NOT_STARTED' }), null);
   assert.equal(relojDe({ period: 0, time: 600000 }), null);
+});
+
+test('en directo el marcador sale de stats/players y el cuarto en juego se deduce', () => {
+  const match = { id: 'x', status: 'LIVE', date: '2026-11-15T15:20:00.000Z', homeTeam: CLIPPERS, awayTeam: OTRO,
+    score: { totals: [{ teamId: 'c', total: 50 }, { teamId: 'o', total: 46 }],
+      partials: [1, 2, 3].flatMap((period) => [{ teamId: 'c', period, partial: [13, 19, 18][period - 1] }, { teamId: 'o', period, partial: [19, 17, 10][period - 1] }]) } };
+  const stats = [{ teamId: 'c', playerId: 'j1', points: 30 }, { teamId: 'c', playerId: 'j2', points: 26 }, { teamId: 'o', playerId: 'j3', points: 51 }];
+  const p = normalizarPartido(match, [], stats);
+  assert.deepEqual([p.local.puntos, p.visitante.puntos], [56, 51]);
+  assert.deepEqual(conCuartoEnCurso(p.local, { periodo: 4, quedanS: 334 }).cuartos, [13, 19, 18, 6]);
+  assert.deepEqual(conCuartoEnCurso(p.local, null).cuartos, [13, 19, 18]);
 });

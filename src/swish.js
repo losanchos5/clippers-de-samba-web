@@ -227,11 +227,19 @@ export function normalizarPartido(match, players = [], stats = [], ahora = Date.
     .filter((st) => fichas.has(st.playerId) || st.points > 0)
     .map((st) => ({ teamId: st.teamId, fila: filaJugador(st, fichas.get(st.playerId)) }));
 
+  // match.score solo se actualiza al cerrar cada cuarto; stats/players va en directo.
+  const sumaStats = {};
+  for (const st of stats) if (typeof st.points === 'number') sumaStats[st.teamId] = (sumaStats[st.teamId] ?? 0) + st.points;
+  const puntosDe = (id) => {
+    if (JUGADO.has(match.status) || sumaStats[id] == null) return totales[id] ?? null; // cerrado: manda el oficial
+    return Math.max(totales[id] ?? 0, sumaStats[id]);
+  };
+
   const lado = (t) => ({
     nombre: limpiarNombre(t?.name),
     logo: logoLocal(t?.logo),
     clippers: CLUB.test(t?.name ?? ''),
-    puntos: totales[t?.id] ?? null,
+    puntos: puntosDe(t?.id),
     cuartos: cuartosDe(match.score?.partials ?? [], t?.id),
     jugadores: filas
       .filter((f) => f.teamId === t?.id)
@@ -267,7 +275,17 @@ export async function obtenerPartido(id, apiKey = API_KEY_PUBLICA) {
     pedir(`match/${id}/status`, apiKey).catch(() => null), // sin reloj no se pierde el marcador
   ]);
   const partido = normalizarPartido(match, players, stats);
-  return { ...partido, reloj: partido.enJuego ? relojDe(estado) : null };
+  const reloj = partido.enJuego ? relojDe(estado) : null;
+  return { ...partido, local: conCuartoEnCurso(partido.local, reloj), visitante: conCuartoEnCurso(partido.visitante, reloj), reloj };
+}
+
+// Los parciales del cuarto en juego no llegan hasta que acaba: se deducen del total en directo.
+export function conCuartoEnCurso(equipo, reloj) {
+  if (!reloj || equipo.puntos == null || equipo.cuartos.length >= reloj.periodo) return equipo;
+  const cuartos = Array.from({ length: reloj.periodo }, (_, i) => equipo.cuartos[i] ?? null);
+  const previos = cuartos.slice(0, -1).reduce((a, v) => a + (v ?? 0), 0);
+  cuartos[reloj.periodo - 1] = Math.max(0, equipo.puntos - previos);
+  return { ...equipo, cuartos };
 }
 
 // match/<id>/status: { period, time } con time = ms que quedan del periodo (cuenta atrás desde 600000).
