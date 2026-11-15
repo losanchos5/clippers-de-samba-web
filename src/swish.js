@@ -260,12 +260,21 @@ export function normalizarPartido(match, players = [], stats = [], ahora = Date.
 }
 
 export async function obtenerPartido(id, apiKey = API_KEY_PUBLICA) {
-  const [match, players, stats] = await Promise.all([
+  const [match, players, stats, estado] = await Promise.all([
     pedir(`match/${id}`, apiKey),
     pedir(`match/${id}/players`, apiKey),
     pedir(`match/${id}/stats/players`, apiKey),
+    pedir(`match/${id}/status`, apiKey).catch(() => null), // sin reloj no se pierde el marcador
   ]);
-  return normalizarPartido(match, players, stats);
+  const partido = normalizarPartido(match, players, stats);
+  return { ...partido, reloj: partido.enJuego ? relojDe(estado) : null };
+}
+
+// match/<id>/status: { period, time } con time = ms que quedan del periodo (cuenta atrás desde 600000).
+// La mesa solo lo manda en las paradas, así que es «el último reloj apuntado», no un crono en vivo.
+export function relojDe(estado) {
+  if (!Number.isInteger(estado?.period) || estado.period < 1 || !Number.isFinite(estado?.time) || estado.time < 0) return null;
+  return { periodo: estado.period, quedanS: Math.round(estado.time / 1000) };
 }
 
 // Lista temporadas, competiciones y grupos para actualizar GRUPOS en una nueva temporada.

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizarEquipo, normalizarLiga, normalizarPartido } from '../src/swish.js';
+import { normalizarEquipo, normalizarLiga, normalizarPartido, relojDe } from '../src/swish.js';
 
 const CLIPPERS = { id: 'c', name: 'CLIPPERS DE SAMBA `B´', logo: null };
 const NAROVELLA = { id: 'n', name: 'AT.C. NAROVELLA `B´', logo: 'https://cdn.leverade.com/thumbnails/AaogUi1SP2s7.500x500.jpg' };
@@ -141,4 +141,11 @@ test('sin estado LIVE, el partido cuenta como en juego solo dentro de su horario
   assert.equal(normalizarPartido(sinCerrar, [], [], inicio + 4 * 3600e3).enJuego, false);
   assert.equal(normalizarPartido(MATCH, [], [], inicio + 3600e3).enJuego, false); // ya cerrado
   assert.equal(normalizarPartido({ ...MATCH, status: 'LIVE' }, [], [], inicio + 5 * 3600e3).enJuego, true);
+});
+
+test('el reloj de match/<id>/status pasa de ms restantes a segundos, y se ignora si viene roto', () => {
+  assert.deepEqual(relojDe({ status: 'LIVE', period: 4, time: 491000 }), { periodo: 4, quedanS: 491 });
+  assert.equal(relojDe(null), null); // la petición de status falló
+  assert.equal(relojDe({ status: 'NOT_STARTED' }), null);
+  assert.equal(relojDe({ period: 0, time: 600000 }), null);
 });

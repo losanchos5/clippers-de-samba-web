@@ -67,7 +67,7 @@ async function datosLiga(request, env, ctx, parte) {
   const cache = caches.default;
   const clave = new Request(new URL(`/api/${parte}`, request.url).toString());
   const enCache = await cache.match(clave);
-  if (enCache) return enCache;
+  if (enCache) return deCache(enCache, 300);
 
   try {
     const respuesta = respuestaJSON((await cargarLiga(env))[parte]);
@@ -112,7 +112,7 @@ async function datosPartido(request, env, ctx, id) {
   const cache = caches.default;
   const clave = new Request(new URL(`/api/partido/${id}`, request.url).toString());
   const enCache = await cache.match(clave);
-  if (enCache) return enCache;
+  if (enCache) return deCache(enCache, 30);
 
   if (!(await idsClippers(env).catch(() => null))?.has(id)) {
     return ligaEnMemoria ? json({ error: 'No encontrado' }, 404) : errorPartido();
@@ -144,6 +144,15 @@ async function datosPartido(request, env, ctx, id) {
 function guardarPartido(id, cuerpo, segundos) {
   if (partidosEnMemoria.size > MAX_PARTIDOS_EN_MEMORIA) partidosEnMemoria.clear();
   partidosEnMemoria.set(id, { cuerpo, segundos, hasta: Date.now() + segundos * 1000 });
+}
+
+// cache.match devuelve max-age=14400 (el «Browser Cache TTL» de la zona) en vez del nuestro, y el
+// navegador se quedaba 4 h con el mismo marcador. Se repone: max-age = mín(s-maxage, tope).
+function deCache(respuesta, maxAgeTope) {
+  const s = Number(/s-maxage=(\d+)/.exec(respuesta.headers.get('Cache-Control') ?? '')?.[1] ?? 60);
+  const copia = new Response(respuesta.body, respuesta);
+  copia.headers.set('Cache-Control', `public, max-age=${Math.min(s, maxAgeTope)}, s-maxage=${s}`);
+  return copia;
 }
 
 function errorPartido() {

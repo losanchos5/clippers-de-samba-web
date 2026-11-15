@@ -89,18 +89,20 @@ function pintar(d) {
     : d.cerrado ? h('span', { class: 'chapa chapa--v' }, 'Final') : null;
   const dia = d.inicio ? fmtFecha.format(new Date(d.inicio)) : '';
   const fecha = d.inicio ? `${dia[0].toUpperCase()}${dia.slice(1)} · ${d.hora}` : 'Fecha por confirmar';
+  const r = d.enJuego ? d.reloj : null;
+  const reloj = r ? `${r.periodo <= 4 ? `${r.periodo}º cuarto` : 'Prórroga'} · quedan ${Math.floor(r.quedanS / 60)}:${String(r.quedanS % 60).padStart(2, '0')}` : null;
   const columnas = d.columnas.filter((c) => COLUMNAS[c]);
   const tablas = [d.local, d.visitante].sort((a, b) => b.clippers - a.clippers).map((e) => tablaJugadores(e, columnas)).filter(Boolean);
 
   // replaceChildren no aplana arrays ni ignora null (los pintaría como texto)
   cuerpo.replaceChildren(...[
-    h('p', { class: 'ficha__estado' }, estado, h('span', {}, fecha)),
+    h('p', { class: 'ficha__estado' }, estado, h('span', {}, fecha), reloj ? h('span', { class: 'ficha__reloj' }, reloj) : null),
     marcador(d),
     tablaCuartos(d),
     ...(tablas.length ? tablas : [h('p', { class: 'partidos__vacio' },
       d.enJuego ? 'La estadística por jugador aparecerá cuando la mesa la publique.' : 'No hay estadística de este partido.')]),
     h('p', { class: 'ficha__pie' },
-      d.enJuego ? `Se actualiza cada minuto. Último dato: ${fmtHora.format(new Date(d.actualizado))}. ` : '',
+      d.enJuego ? `Se actualiza cada minuto. Último dato: ${fmtHora.format(new Date(d.actualizado))}${r ? ' (el reloj es el que apunta la mesa en las paradas)' : ''}. ` : '',
       'La mesa no apunta rebotes ni asistencias. ',
       d.acta ? h('a', { href: d.acta, target: '_blank', rel: 'noopener' }, 'Ver el acta oficial') : null),
   ].filter(Boolean));
@@ -115,7 +117,8 @@ function pintar(d) {
 
 async function cargar(id, enDirecto = false) {
   const n = ++peticion;
-  const datos = await cargarJSON([`/api/partido/${id}`], 10_000);
+  // no-cache: hubo respuestas con max-age de 4 h y el navegador repetía el marcador viejo.
+  const datos = await cargarJSON([`/api/partido/${id}`], 10_000, { cache: 'no-cache' });
   if (n !== peticion || idAbierto !== id) return; // se cerró, o ya hay una petición más nueva
   // En directo, un fallo puntual deja el último marcador y se reintenta al minuto.
   if (!datos && temporizador) return;
